@@ -1,0 +1,25 @@
+-@BootstrapV= "4.0.0-beta"
+-@PopperV="1.12.5"
+-@NormalizeV="7.0.0"
+-@jQueryV="3.2.1"
+-@FontAwesomeV="4.7.0"
+
+%link{rel:"stylesheet", href:"https://cdnjs.cloudflare.com/ajax/libs/normalize/"+@NormalizeV+"/normalize.min.css"}
+%link{rel:"stylesheet", href:"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/"+@FontAwesomeV+"/css/font-awesome.min.css"}
+%link{rel:"stylesheet", href:"https://fonts.googleapis.com/icon?family=Material+Icons"}
+%link{rel:"stylesheet",href:"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/"+@BootstrapV+"/css/bootstrap.min.css"}
+%link{rel:"stylesheet", href:"https://cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.css"}
+%lin{rel:"stylesheet",href: "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css"}
+
+%form 
+    .input-field
+        %input#email1{type:"email", required:"true", name:"email"}
+        %label.active{for:"email1"} E-mail*
+
+
+
+%script{src:"https://cdnjs.cloudflare.com/ajax/libs/jquery/"+@jQueryV+"/jquery.js"}
+%script{src:"https://cdnjs.cloudflare.com/ajax/libs/popper.js/"+@PopperV+"/umd/popper.js"}
+%script{src:"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/"+@BootstrapV+"/js/bootstrap.min.js"}
+%script{src:"https://cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.js"}
+%script{src:"https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.js"}
