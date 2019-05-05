@@ -24,9 +24,11 @@
     - clase abierta
 - 05.rb
     - scope
-    - sobre-escribir función
+    - redefinir función
     - argumentos
     - múltiples argumentos
     - argumentos con valores por defecto
 - 06.rb 
+    - modulos
+- 07.rb 
     - lectura de archivo

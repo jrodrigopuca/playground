@@ -1,6 +1,7 @@
 
 # varible global
 $variableglobal=50
+_localvariable=100
 
 # Definir clase
 class Persona

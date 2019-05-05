@@ -5,7 +5,7 @@ def nombre.saludar
 end 
 puts nombre.saludar #=> Hola Juan
 
-# sobre-escribir función
+# redefinir función
 class String
     def to_i 
         "sobrescribiendo!"
