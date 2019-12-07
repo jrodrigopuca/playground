@@ -20,7 +20,7 @@ testB.saludar   #=> otro saludo
 puts "---"
 
 
-# Objeto procedimiento
+# Objeto procedimiento{}
 #   para definir respuestas a sucesos inesperados
 
 op = proc{puts "Haz algo!"}

@@ -11,9 +11,16 @@
     - expresiones
     - números
     - array
+    - operaciones entre vectores
+    - descomposición
+    - acceso a elementos del array 
+    - rangos
+    - conversiones
 - 03.rb 
     - hashes
     - recorriendo hash
+    - acceder al contenido del hash
+    - Generando contenido para el hash
 - 04.rb
     - variable global 
     - clases
@@ -22,13 +29,22 @@
     - constructor
     - herencia
     - clase abierta
+    - constantes especiales
 - 05.rb
     - scope
     - redefinir función
-    - argumentos
-    - múltiples argumentos
-    - argumentos con valores por defecto
+    - parametros
+    - parametros opcionales
+    - parametros con valores por defecto
+    - yield
 - 06.rb 
     - modulos
-- 07.rb 
+- 07.rb
+    - if/else
+    - ternario
+    - case-when
+    - while-until
+- 09.rb 
     - lectura de archivo
+- 10.rb
+    - simple GUI

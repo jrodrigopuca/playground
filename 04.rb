@@ -64,7 +64,7 @@ class HerenciaH < HerenciaP
 
     # Método público
     def metodo_publico 
-        "publico vs "+ self.metodo_privado 
+        "público vs "+ self.metodo_privado 
     end 
 
     # Método privado
@@ -81,14 +81,21 @@ puts HerenciaH.ancestors    #muestra las clases superiores
 puts "---"
 
 heredero= HerenciaH.new()
-puts heredero.mostrarTexto
-puts heredero.metodo_publico
+puts heredero.mostrarTexto      #=> hola estoy usando herencia
+puts heredero.metodo_publico    #=> público vs privado
 puts "---"
 
+# El objetivo ahora es usar metodos y redifinir operadores
+
 class ClaseAbierta
+    MENSAJE_DEF= "Hola mundo"
     def saludar 
         "Hola"
     end 
+
+    def devolverSaludo(mensaje=nil)
+        mensaje==nil ? MENSAJE_DEF : "Gracias"
+    end
 
     def -@
         "negativo"
@@ -115,7 +122,13 @@ class ClaseAbierta
     end 
 
     def + (val)
-        "sumar"
+        #en vez de sumar el valor muestra texto
+        "Intenando sumar"
+    end
+
+    def **(val)
+        #en vez de usar potencia muestra texto
+        "Intentando usar potencia"
     end
 end
 
@@ -127,4 +140,28 @@ puts obj[1,2] #=> 3
 obj[1,2,3]=4  #=> 24
 obj.a=5       #=> asignado:5
 puts obj==3   #=> comparado con 3
-puts obj+5    #=> sumar
+puts obj+5    #=> Intentando sumar
+puts obj**2    #=> Intentando usar potencia
+puts ClaseAbierta::MENSAJE_DEF          #=> Hola mundo
+puts obj.devolverSaludo("¿cómo estás?") #=> "Gracias"
+puts "---"
+
+# Devolver un valor por defecto
+class Df 
+    def to_s
+        "valor por defecto"
+    end
+end
+
+puts Df.new #=> "valor por defecto"
+puts "---"
+
+
+# Constantes especiales
+puts __FILE__       #=> 04.rb
+puts __dir__        #=> F:/playground
+puts $$             #=> Número de proceso: 1172
+
+
+
+
