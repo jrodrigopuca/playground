@@ -1,4 +1,4 @@
 ## entrada
-puts "ingresa un número"
-num = gets
-puts "el numero ingresado fue #{num.to_i}"
+p "ingresa un número:"
+num = gets.chomp
+p "el numero ingresado fue #{num.to_i}"

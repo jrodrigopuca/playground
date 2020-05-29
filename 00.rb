@@ -39,6 +39,11 @@ p 4.7::next_float #=> 4.700000000000001
 p 4.7::prev_float #=> 4.699999999999999
 p 4.7::round      #=> 5 redondea
 
+
+p "*** Métodos con booleanos ***"
+a = nil 
+p a.nil?          #=> true 
+
 # Métodos 
 # p 2.methods              #=> todos los métodos de un entero
 # p "hola"::public_methods #=> métodos públicos de un string

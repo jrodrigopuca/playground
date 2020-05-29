@@ -1,13 +1,15 @@
 ## Playground 
 - 00.rb
     - Asignación
-    - Tipo de dato
+    - Tipos de datos
 - 01.rb
     - Comentario
     - Imprimir texto
     - métodos de string
     - Bloques de string
     - string con secuencia de escape
+    - concatenación
+    - interpolación
 - 02.rb 
     - boolean
     - expresiones
@@ -54,3 +56,4 @@
     - entrada
 - 12.rb
     - notación %
+    - bang !

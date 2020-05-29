@@ -42,7 +42,7 @@ p Array.new(3){|i| i+=1}   #=> [1, 2, 3]
 puts '---'
 
 # operaciones entre vectores
-p [1,2]+[3,4]				#=> [1, 2, 3, 4] 	agregar a vector
+p [1,2]+[3,4]					#=> [1, 2, 3, 4] 	agregar a vector
 p [1,2,3] - [2]				#=> [1,3]			quitar elemento repetido
 p [1,2,3] | [3,4]			#=> [1,2,3,4]		agregar solo elementos no repetidos
 
