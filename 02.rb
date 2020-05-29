@@ -91,4 +91,6 @@ p 1.50.to_s 				# "1.5"
 p "1.50".to_i				# 1 
 p "algo".to_sym 			#=> :algo 	convierte un string a un simbolo
 
-
+# Tipado dinámico
+x= [:a, :b, :c]
+p x.map(&:to_s) # => ['a', 'b', 'c']

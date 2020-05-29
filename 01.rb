@@ -7,10 +7,9 @@
     comentario3
 =end 
 
-
 # imprimir contenido
 puts "Buen inicio"      #=> Buen inicio
-p "Buen inicio"         #=> "Buen inicio"
+puts "Buen inicio"         #=> "Buen inicio"
 
 # imprimir variables
 texto = "hola "
@@ -20,6 +19,7 @@ puts texto.concat("Juan") #=> hola Juan (concatenar)
 puts "-----"
 
 # métodos de string
+puts "Hello".encoding   #=> #<Encoding:UTF-8>
 puts texto.upcase      #=> HOLA  (a mayúsculas)
 puts texto.object_id   #=> 24763344 (traer ID)
 puts texto.strip       #=> hola (quitar espacios)
@@ -30,8 +30,13 @@ puts texto.include?"ol"#=> true (busca subcadena)
 puts texto.index("o")  #=> 1 (busca indice)
 puts texto.crypt("sal") #=> aplica criptografia
 puts texto.hash()      #=> hash
-puts texto.capitalize #=> "Hola" (con la primera letra en mayus)
+puts texto.capitalize #=> "Hola juan" (con la primera letra en mayus)
+puts "mundo".prepend("hola ") #=> "hola mundo" (agrega antes de la palabra)
 puts "h o l a".split #=> h o l a (separado por nueva lineas)
+puts "h o l a".strip    #=> hola (string sin espacios)
+puts texto.partition(" ") # separa en 3 partes ("hola", " ", "juan") 
+puts texto.equal?("b")  #=> false (comparación)
+
 puts "-----"
 
 # bloque de string 
@@ -49,8 +54,3 @@ puts "texto \t tab"
 puts "texto \"comillas\" "
 puts "texto \\ barra invertida"
 puts "-----"
-
-
-
-
-

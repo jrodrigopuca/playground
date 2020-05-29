@@ -49,4 +49,36 @@ puts "---"
 
 # Usando función como bloque
 p [0,1,2,3,4].map{|i| i*3}  #=> [0, 3, 6, 9, 12]
+puts "---"
+
+# Reflection: utilizado para entender lo que se sucede en tiempo de ejecución
+class MiClase
+  def saludar
+    p "hola"
+  end
+end
+
+# sin reflection
+obj1= MiClase.new
+obj1.saludar
+
+# con reflection
+class_name = "MiClase"
+method_name= :saludar
+obj2 = Object.const_get(class_name).new
+obj2.send method_name
+puts "---"
+
+# metaprogramación: permite crear métodos y clases dinamicamente en tiempo de ejecución.
+['uno','dos','tres'].each do |num|
+  define_method(num) do
+    num.upcase
+  end
+end
+
+puts dos
+
+
+
+
 

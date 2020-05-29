@@ -1,5 +1,7 @@
 ## Playground 
-
+- 00.rb
+    - Asignación
+    - Tipo de dato
 - 01.rb
     - Comentario
     - Imprimir texto
@@ -48,3 +50,7 @@
     - lectura de archivo
 - 10.rb
     - simple GUI
+- 11.rb
+    - entrada
+- 12.rb
+    - notación %

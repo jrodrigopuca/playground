@@ -1,12 +1,17 @@
 # Estructuras de control
 
+# if-then
+hacer = true
+mensaje = if hacer then "hacer algo" else "no hacer nada" end 
+puts mensaje #=> "hacer algo"
+
 # IF_ELSE_END
 edad=18
 esMayor = if edad >= 18 
-        :mayor 
-else
-    :menor 
-end
+            :mayor 
+        else
+            :menor 
+        end
 
 puts esMayor                    #=> mayor
 puts edad if edad>=18           #=> 18      Inline IF
