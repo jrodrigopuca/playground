@@ -43,6 +43,8 @@ p 4.7::round      #=> 5 redondea
 p "*** Métodos con booleanos ***"
 a = nil 
 p a.nil?          #=> true 
+b = true
+puts b.instance_of? TrueClass #=> true (es instancia) 
 
 # Métodos 
 # p 2.methods              #=> todos los métodos de un entero
