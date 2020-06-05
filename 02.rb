@@ -1,13 +1,3 @@
-# Condiciones
-b = true
-puts '--- condiciones ---'
-puts true == "true" #=> false   
-puts true != b      #=> false
-puts false & b      #=> false   and
-puts false | b      #=> True    or
-puts false || b     #=> true    logical or
-puts false ^ b      #=> true    xor 
-
 # Números con base
 puts '--- base ---'
 puts 0x100	        #base 16 =>256

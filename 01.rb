@@ -8,8 +8,8 @@
 =end 
 
 # imprimir contenido
-puts "Buen inicio"      #=> Buen inicio
-puts "Buen inicio"         #=> "Buen inicio"
+puts "Buen inicio"          #=> Buen inicio
+puts "Buen inicio"          #=> "Buen inicio"
 
 # imprimir variables
 texto = "hola "

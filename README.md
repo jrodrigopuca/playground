@@ -2,6 +2,17 @@
 - 00.rb
     - Asignación
     - Tipos de datos
+        - String
+        - Númericos
+        - Booleanos
+    - Métodos
+        - en enteros
+        - en flotantes
+        - en booleanos
+    - Operadores booleanos
+    - Veracidad
+    - Orden de precedencia
+    - Symbols
 - 01.rb
     - Comentario
     - Imprimir texto
@@ -11,28 +22,33 @@
     - concatenación
     - interpolación
 - 02.rb 
-    - boolean
-    - expresiones
-    - números
+    - números con base
     - array
-    - operaciones entre vectores
+    - iteración
+    - iteración con index
     - descomposición
-    - acceso a elementos del array 
+    - operaciones entre vectores
+    - métodos de array
     - rangos
-    - conversiones
+    - conversiones (casting)
+    - tipado dinámico
 - 03.rb 
     - hashes
-    - recorriendo hash
-    - acceder al contenido del hash
-    - Generando contenido para el hash
+    - acceder a hash
+    - agregar/ver elementos
+    - recorrer hash
+    - operaciones con hash
+    - ejemplocon hash
+    - generar contenido para hash
 - 04.rb
-    - variable global 
+    - métodos
+    - método con cualquier parametro
+    - método con múltiples retornos
+    - método con retorno de boolean
+    - mótodo con modificación del objeto o bang!
+    - variable global
     - clases
-    - variable de clase
-    - constante
-    - constructor
     - herencia
-    - clase abierta
     - constantes especiales
 - 05.rb
     - scope
@@ -42,7 +58,7 @@
     - parametros con valores por defecto
     - yield
 - 06.rb 
-    - modulos
+    - Singleton
 - 07.rb
     - if/else
     - ternario

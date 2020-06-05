@@ -1,7 +1,48 @@
+# Metódos
+# p 2.methods              #=> todos los métodos de un entero
+# p "hola"::public_methods #=> métodos públicos de un string
+
+puts '---Métodos---'
+# Método con valor por defecto y return 
+def suma a,b=0
+    "la suma es #{a+b}"
+end
+puts suma(1,2)              #=> la suma es 3
+
+puts '---Método con cualquier parametro---'
+def nParameters(*par)
+    puts "valores: #{par.join(", ")}"
+end 
+nParameters("uno", "dos")   #=> valores: uno, dos
+
+puts '---Método con múltiples retornos---'
+# para tener múltiples retornos se crea un array y se agrega (<<) al array los valores
+def operaciones a, b
+    resultados = []
+    resultados << a+b 
+    resultados << a-b
+    resultados << a*b
+end 
+puts operaciones 1, 2       #=> 3 -1  2
+
+puts '---Método con retorno de boolean ---'
+def es_mayor?edad
+    edad>18
+end 
+puts es_mayor?28            #=> true
+
+puts '---Método con modificación del objeto o bang! ---'
+def unico! test 
+    test.uniq!
+end 
+test_array = [1,2,3,4,3,2,1]
+unico!(test_array) 
+p test_array        #=> [1, 2, 3, 4]
+
+puts "--- ---"
 
 # varible global
 $variableglobal=50
-
 _localvariable=100
 
 # Definir clase
