@@ -87,3 +87,5 @@ while i<5
     puts "i: #{i}"
     i+=1
 end 
+
+#loops
