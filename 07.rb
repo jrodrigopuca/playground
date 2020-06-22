@@ -51,9 +51,9 @@ puts "====== CASE/WHEN ======"
 # por valor
 def tipo_animal(tipo)
     case tipo
-    when :perro then "woof"
-    when :gato  then "meow"
-    else nil
+        when :perro then "woof"
+        when :gato  then "meow"
+        else nil
     end
 end
 p tipo_animal(:perro)
@@ -62,30 +62,51 @@ p tipo_animal(:perro)
 # por rango
 valor = 5
 case valor
-when 1..5
-    puts "del 1 a 5"
-when 6..10
-    puts "del 5 al 10"
-else 
-    puts "otro valor"
+    when 1..5
+        puts "del 1 a 5"
+    when 6..10
+        puts "del 5 al 10"
+    else 
+        puts "otro valor"
 end # => "del 1 a 5"
 
 # por tipo de dato
 valor2 = "hola"
 case valor2
-when Integer
-    puts "número entero"
-when String
-    puts "texto"
-else
-    puts "otra cosa"
+    when Integer
+        puts "número entero"
+    when String
+        puts "texto"
+    else
+        puts "otra cosa"
 end #=> "texto"
 
-# WHILE_UNTIL
+
+puts "====== LOOPS ======"
+# WHILE DO
 i= 0 
 while i<5 
-    puts "i: #{i}"
+    puts "i con while-do: #{i}"
     i+=1
 end 
 
-#loops
+# UNTIL DO 
+b=0
+until b>=300
+    b+=50
+    puts "b con until-do: #{b}"
+end
+
+#do-while
+b=0
+loop do
+    b+=50
+    puts "b con do-while: #{b}"
+    break if b>=300
+end
+
+b=0
+begin
+    b+=50
+    puts "b con do-while en begin-end: #{b}"
+end while b<300
