@@ -41,6 +41,11 @@ p test_array        #=> [1, 2, 3, 4]
 
 puts "--- ---"
 
+
+
+
+
+
 # varible global
 $variableglobal=50
 _localvariable=100

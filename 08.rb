@@ -45,6 +45,8 @@ puts "=========MAP =============="
 # Map: devuelve una nueva colección de items
 p [1,2,3].map{|i| i+5} #=> [6, 7, 8]
 
+p ['a', 'b'].map(&:upcase) # Transformar cada item a mayus
+#=> ["A","B"]
 
 # Ejemplo
 ### Método para calcular el precio

@@ -77,6 +77,8 @@ case valor2
         puts "número entero"
     when String
         puts "texto"
+    when Hash 
+        puts "hash"
     else
         puts "otra cosa"
 end #=> "texto"
@@ -89,6 +91,10 @@ while i<5
     puts "i con while-do: #{i}"
     i+=1
 end 
+
+i=0
+i+=1 while i<5
+puts "i con while en una sentencia: #{i}"
 
 # UNTIL DO 
 b=0
