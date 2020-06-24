@@ -1,6 +1,13 @@
 # Metódos
 # p 2.methods              #=> todos los métodos de un entero
 # p "hola"::public_methods #=> métodos públicos de un string
+# Un método es compuesto por: 
+#   signature: primera linea del método 
+#       - como el método es llamado (clase, instancia, módulo, anonimamente) 
+#       - nombre del método
+#       - argumentos
+#   implementación: cuerpo del método
+
 
 puts '---Métodos---'
 # Método con valor por defecto y return 
@@ -9,11 +16,58 @@ def suma a,b=0
 end
 puts suma(1,2)              #=> la suma es 3
 
+puts "=======ARGUMENTO========="
+puts '---Método con argumento posicional ---'
+def calcular_impuesto(valor, impuesto)
+    puts (valor*impuesto).to_f
+end
+calcular_impuesto(10,0.25) #=> 2.5
+
+puts '---Método con parantesis opcional ---'
+def saludar nombre
+    puts "Hola #{nombre}" 
+end 
+saludar "Juan" #=> "Hola Juan"
+
+puts '---Método con argumento obligatorio/opcional ---'
+def log(mensaje,tiempo=Time.now) 
+    puts "[#{tiempo}] #{mensaje}"
+end 
+log "Usuario Logeado" #=> [2020-06-23 22:34:14 -0300] Usuario Logeado
+
+
+puts '---Método con argumentos no posicionales---'
+# Es una forma introducida en Ruby 2 para usar argumentos en cualquier posición. Tambien llamados Keywords arguments
+def notificar(opciones={})
+    persona = opciones[:usuario]
+    mensaje = opciones[:texto]
+    p "-#{persona}: #{mensaje}"
+end
+notificar(texto:"Hola, ¿cómo estás?", usuario:"Juan") #=> "-Juan: Hola, ¿cómo estás?"
+
+
+puts '---Métodos luego de Ruby 2.0 ---'
+# se puede pasar los valores de forma más explicita
+def log_nuevo(mensaje:,tiempo:Time.now) 
+    puts "[#{tiempo}] #{mensaje}"
+end 
+log_nuevo(mensaje:"Usuario Logeado") #=> [2020-06-23 22:57:35 -0300] Usuario Logeado
+
+
 puts '---Método con cualquier parametro---'
 def nParameters(*par)
     puts "valores: #{par.join(", ")}"
 end 
 nParameters("uno", "dos")   #=> valores: uno, dos
+
+
+puts "=======RETORNO========="
+
+puts '---Método con retorno---'
+def resta(var1, var2)
+    var1-var2
+end 
+p resta(10,1) #=> 9
 
 puts '---Método con múltiples retornos---'
 # para tener múltiples retornos se crea un array y se agrega (<<) al array los valores
@@ -24,6 +78,15 @@ def operaciones a, b
     resultados << a*b
 end 
 puts operaciones 1, 2       #=> 3 -1  2
+
+def retornar_aleatorios valor
+    return rand(valor), rand(valor)
+end 
+p retornar_aleatorios(5)    #=> [2, 4]
+
+array = [1,2,3,4,5]
+ultimo1, ultimo2 = array.last(2)
+p [ultimo1, ultimo2]        #=> [4,5]
 
 puts '---Método con retorno de boolean ---'
 def es_mayor?edad
@@ -38,12 +101,6 @@ end
 test_array = [1,2,3,4,3,2,1]
 unico!(test_array) 
 p test_array        #=> [1, 2, 3, 4]
-
-puts "--- ---"
-
-
-
-
 
 
 # varible global
