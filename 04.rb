@@ -54,12 +54,21 @@ end
 log_nuevo(mensaje:"Usuario Logeado") #=> [2020-06-23 22:57:35 -0300] Usuario Logeado
 
 
-puts '---Método con cualquier parametro---'
+puts '---Método con Splat: cualquier argumento---'
+# operador Splat (*)
 def nParameters(*par)
     puts "valores: #{par.join(", ")}"
 end 
 nParameters("uno", "dos")   #=> valores: uno, dos
 
+puts '---Método con doble Splat: cualquier argumento y no posicional---'
+# operador Doble Splat (**)
+def notificarII(**opciones)
+    persona = opciones[:usuario]
+    mensaje = opciones[:texto]
+    p "-#{persona}: #{mensaje}"
+end
+notificarII(texto:"Hola, ¿cómo estás?", usuario:"Juan") #=> "-Juan: Hola, ¿cómo estás?"
 
 puts "=======RETORNO========="
 
