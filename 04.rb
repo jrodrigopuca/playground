@@ -1,5 +1,5 @@
 # Metódos
-# p 2.methods              #=> todos los métodos de un entero
+# p 1.methods              #=> todos los métodos de un entero
 # p "hola"::public_methods #=> métodos públicos de un string
 # Un método es compuesto por: 
 #   signature: primera linea del método 
