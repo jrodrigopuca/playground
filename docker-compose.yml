@@ -1,0 +1,12 @@
+# using https://github.com/RubyData/docker-stacks/blob/master/datascience/Dockerfile
+
+version: "3.7"
+services:
+  datasc-ruby:
+    image: rubydata/datascience-notebook
+    environment:
+      - JUPYTER_TOKEN=no_pass
+    volumes:
+      - ./notes:/home/jovyan/work
+    ports: 
+      - 8888:8888
