@@ -1,12 +1,26 @@
-# using https://github.com/RubyData/docker-stacks/blob/master/datascience/Dockerfile
+# Docker Compose para ejecutar scripts Ruby de este proyecto
+# Uso típico:
+#   - Ejecutar un script en la raíz:   docker compose run --rm ruby ruby 00.rb
+#   - Ejecutar uno en subcarpeta:     docker compose run --rm ruby ruby practicas/mind-reader.rb
+#   - Sesión interactiva (IRB):       docker compose run --rm ruby irb
 
-version: "3.7"
+version: "3.9"
+
 services:
-  datasc-ruby:
-    image: rubydata/datascience-notebook
-    environment:
-      - JUPYTER_TOKEN=no_pass
+  ruby:
+    image: ruby:3.3
+    working_dir: /app
     volumes:
-      - ./notes:/home/jovyan/work
-    ports: 
-      - 8888:8888
+      - .:/app:cached
+      - bundle:/usr/local/bundle
+    tty: true          # Permite sesiones interactivas (IRB, gets, etc.)
+    stdin_open: true   # Mantiene STDIN abierto para entrada de usuario
+    environment:
+      - BUNDLE_PATH=/usr/local/bundle
+      - BUNDLE_JOBS=4
+      - BUNDLE_RETRY=3
+    # Si quieres que por defecto abra IRB cuando hagas `docker compose run ruby`:
+    # command: ["irb"]
+
+volumes:
+  bundle:
