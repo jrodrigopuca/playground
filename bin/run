@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Uso: bin/run <grupo> <archivo-sin-ext> [args...]
+#  grupo: lecciones | practicas | socket | graph
+#  ejemplo: bin/run lecciones 00
+
+if [[ $# -lt 2 ]]; then
+  echo "Uso: $0 <lecciones|practicas|socket|graph> <nombre|numero> [args...]" >&2
+  exit 1
+fi
+
+GRUPO="$1"
+ARCHIVO="$2"
+shift 2
+
+case "$GRUPO" in
+  lecciones|practicas|socket|graph) ;;
+  *) echo "Grupo inválido: $GRUPO" >&2; exit 2;;
+esac
+
+RUTA="examples/${GRUPO}/${ARCHIVO%.rb}.rb"
+
+if [[ ! -f "$RUTA" ]]; then
+  echo "No existe: $RUTA" >&2
+  exit 3
+fi
+
+if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
+  # Ejecutar dentro del contenedor si existe compose
+  exec docker compose run --rm ruby ruby "$RUTA" "$@"
+else
+  # Ejecutar localmente
+  exec ruby "$RUTA" "$@"
+fi
