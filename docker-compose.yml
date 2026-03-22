@@ -21,6 +21,8 @@ services:
       - BUNDLE_RETRY=3
     # Si quieres que por defecto abra IRB cuando hagas `docker compose run ruby`:
     # command: ["irb"]
-
+    # agregar port 9292 a 3000 para puma
+    ports:
+      - "3000:9292"
 volumes:
   bundle:

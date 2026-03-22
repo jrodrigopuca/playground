@@ -1,0 +1,15 @@
+-@brand="brand"
+-# Basic nav items/sections
+-menu={"Section 1":"#section1", "Section 2":"#section2"}
+
+.navbar.navbar-expand-lg.navbar-dark.bg-dark
+    .navbar-brand= @brand
+    %button.navbar-toggler.navbar-toggler-right.waves-float{ type: "button", "data-toggle" => "collapse", "data-target" => "#MyNavbar", "aria-controls" => "MyNavbar", "aria-expanded" => "true" }
+        %span
+            %i.material-icons more_vert
+
+    .collapse.navbar-collapse#MyNavbar
+        %ul.navbar-nav
+            -menu.each do |key,value|
+                %li.nav-item
+                    %a.nav-link{href:"#{value}"}= key

@@ -96,6 +96,7 @@ docker compose run --rm ruby ruby 02.rb arg1 arg2
 ```
 
 Notas:
+
 - El contenedor monta este directorio en `/app`, por eso las rutas son relativas al root del repo.
 - `tty` y `stdin_open` están habilitados, así que `gets` y otros métodos interactivos funcionan bien.
 - Las gems se cachean en un volumen llamado `bundle` para acelerar instalaciones posteriores.
@@ -104,4 +105,3 @@ Notas:
 ```bash
 docker compose run --rm ruby bundle install
 ```
-
