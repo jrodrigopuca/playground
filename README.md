@@ -1,107 +1,133 @@
-## Playground
+# Ruby Playground
 
-- 00.rb
-  - Asignación
-  - Tipos de datos
-    - String
-    - Númericos
-    - Booleanos
-  - Métodos
-    - en enteros
-    - en flotantes
-    - en booleanos
-  - Operadores booleanos
-  - Veracidad
-  - Orden de precedencia
-  - Symbols
-- 01.rb
-  - Comentario
-  - Imprimir texto
-  - métodos de string
-  - Bloques de string
-  - string con secuencia de escape
-  - concatenación
-  - interpolación
-- 02.rb
-  - números con base
-  - array
-  - iteración
-  - iteración con index
-  - descomposición
-  - operaciones entre vectores
-  - métodos de array
-  - rangos
-  - conversiones (casting)
-  - tipado dinámico
-- 03.rb
-  - hashes
-  - acceder a hash
-  - agregar/ver elementos
-  - recorrer hash
-  - operaciones con hash
-  - ejemplocon hash
-  - generar contenido para hash
-- 04.rb
-  - métodos
-  - método con cualquier parametro
-  - método con múltiples retornos
-  - método con retorno de boolean
-  - mótodo con modificación del objeto o bang!
-  - variable global
-  - clases
-  - herencia
-  - constantes especiales
-- 05.rb
-  - scope
-  - redefinir función
-  - parametros
-  - parametros opcionales
-  - parametros con valores por defecto
-  - yield
-- 06.rb
-  - Singleton
-- 07.rb
-  - if/else
-  - ternario
-  - case-when
-  - while-until
-- 09.rb
-  - lectura de archivo
-- 10.rb
-  - simple GUI
-- 11.rb
-  - entrada
-- 12.rb
-  - notación %
-  - bang !
+Repositorio orientado a **exploración práctica y rápida de Ruby**.
 
-## Ejecutar con Docker Compose
+La idea de este proyecto es simple: tener ejemplos chicos, ejecutables y fáciles de entender para practicar conceptos, probar ideas y aprender sin convertir el repo en una aplicación grande o en una librería formal.
 
-Requisitos: tener Docker Desktop instalado y en ejecución.
+## Qué es este repositorio
 
-Comandos rápidos:
+Este repo es un **playground de Ruby**.
+
+Está pensado para:
+
+- practicar fundamentos del lenguaje;
+- ejecutar scripts pequeños y autocontenidos;
+- experimentar con ejemplos de consola, archivos, sockets y gems puntuales;
+- aprender rápido a partir de casos concretos.
+
+## Qué NO es este repositorio
+
+Este repo **no** busca ser:
+
+- una app web productiva;
+- una librería reusable;
+- un template genérico de aplicación;
+- un conjunto de ejemplos acoplados a una arquitectura grande.
+
+## Estructura actual
+
+Hoy el repo está organizado así:
+
+```text
+.
+├── README.md
+├── docker-compose.yml
+├── bin/
+│   └── run
+├── data/
+│   └── texto.txt
+├── docs/
+│   ├── ESTADO_ACTUAL.md
+│   └── ARQUITECTURA_DEL_PLAYGROUND.md
+└── examples/
+    ├── graph/
+    ├── lecciones/
+    ├── practicas/
+    └── socket/
+```
+
+### Carpetas activas
+
+- `examples/lecciones/`: ejemplos de fundamentos y conceptos base de Ruby.
+- `examples/practicas/`: ejercicios cortos y scripts de práctica manual.
+- `examples/socket/`: pruebas experimentales con sockets TCP.
+- `examples/graph/`: ejemplo puntual con GraphQL.
+
+## Cómo ejecutar ejemplos
+
+La interfaz principal actual es `bin/run`.
+
+### Uso general
 
 ```bash
-# Abrir una sesión interactiva de Ruby (IRB)
+bin/run <grupo> <archivo-sin-ext>
+```
+
+### Grupos disponibles hoy
+
+- `lecciones`
+- `practicas`
+- `socket`
+- `graph`
+
+### Ejemplos
+
+```bash
+bin/run lecciones 00
+bin/run practicas mind-reader
+bin/run socket 08
+bin/run graph 01
+```
+
+## Cómo funciona `bin/run`
+
+El script intenta ejecutar de esta manera:
+
+1. si Docker Compose está disponible, usa contenedor;
+2. si no, intenta ejecutar con Ruby local.
+
+Eso permite mantener una experiencia simple sin obligarte a recordar rutas largas dentro de `examples/`.
+
+## Ejecución con Docker Compose
+
+Si querés ejecutar cosas manualmente con Docker Compose, hoy el repo trae un servicio `ruby` basado en `ruby:3.3`.
+
+Ejemplos:
+
+```bash
+# Abrir IRB
 docker compose run --rm ruby irb
 
-# Ejecutar un script en la raíz del proyecto
-docker compose run --rm ruby ruby 00.rb
+# Ejecutar un script de forma manual
+docker compose run --rm ruby ruby examples/lecciones/00.rb
 
-# Ejecutar un script dentro de una subcarpeta
-docker compose run --rm ruby ruby practicas/mind-reader.rb
-
-# Pasar argumentos a tu script
-docker compose run --rm ruby ruby 02.rb arg1 arg2
+# Ejecutar un script interactivo
+docker compose run --rm ruby ruby examples/practicas/mind-reader.rb
 ```
 
-Notas:
+## Ejecución local
 
-- El contenedor monta este directorio en `/app`, por eso las rutas son relativas al root del repo.
-- `tty` y `stdin_open` están habilitados, así que `gets` y otros métodos interactivos funcionan bien.
-- Las gems se cachean en un volumen llamado `bundle` para acelerar instalaciones posteriores.
-- Si necesitas gems, crea un `Gemfile` y luego:
+Si no usás Docker, también podés correr ejemplos con Ruby instalado localmente:
 
 ```bash
-docker compose run --rm ruby bundle install
+ruby examples/lecciones/00.rb
+ruby examples/practicas/mind-reader.rb
 ```
+
+O, mejor todavía, usar:
+
+```bash
+bin/run lecciones 00
+```
+
+## Documentación disponible
+
+- `docs/ESTADO_ACTUAL.md`: relevamiento del estado real del repo.
+- `docs/ARQUITECTURA_DEL_PLAYGROUND.md`: visión, principios y estructura objetivo del playground.
+- `docs/COMO_EJECUTAR.md`: guía operativa de ejecución.
+- `docs/MAPA_DEL_REPO.md`: mapa actual del repositorio.
+- `docs/COMO_AGREGAR_EJEMPLOS.md`: estándar para sumar ejemplos nuevos.
+
+---
+
+Si querés usar este repo como playground, pensalo así: **entrar, elegir un ejemplo, ejecutarlo y aprender algo concreto sin vueltas**.
