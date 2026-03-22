@@ -19,7 +19,7 @@ GEM
     nio4r (2.7.4)
     puma (7.0.4)
       nio4r (~> 2.0)
-    rack (3.2.3)
+    rack (3.2.5)
     rackup (2.2.1)
       rack (>= 3)
     rb-fsevent (0.11.2)
@@ -53,6 +53,7 @@ DEPENDENCIES
   rack
   rackup
   sass
+  tilt (~> 2.0)
 
 RUBY VERSION
    ruby 3.3.9p170
