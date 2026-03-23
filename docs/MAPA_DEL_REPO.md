@@ -69,7 +69,7 @@ Define el entorno contenedorizado para ejecutar scripts Ruby.
 
 ### Observaciones
 
-- usa `ruby:3.3`;
+- usa `ruby:4.0.2`;
 - mantiene `tty` y `stdin_open`;
 - expone `3000:9292`, aunque hoy no hay una app web activa que lo necesite como parte central del playground.
 

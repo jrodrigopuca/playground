@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_GEMFILE="$ROOT_DIR/Gemfile"
+
+cd "$ROOT_DIR"
+
+print_help() {
+  cat <<'EOF'
+Uso:
+  bin/setup --help
+  bin/setup check
+  bin/setup auto
+  bin/setup local
+  bin/setup docker
+
+Comandos:
+  check   Muestra el estado del entorno local y Docker.
+  auto    Intenta preparar Docker si está operativo; si no, valida entorno local.
+  local   Valida Ruby local y ejecuta bundle install si existe Gemfile raíz.
+  docker  Valida Docker Compose y ejecuta bundle install en contenedor si existe Gemfile raíz.
+
+Notas:
+  - Hoy el repo todavía no tiene Gemfile raíz. En ese caso bin/setup valida el entorno,
+    pero no instala dependencias del proyecto.
+  - Para entorno local en macOS, conviene correr primero bin/pre-setup-local.
+  - Este script prepara el entorno. Para ejecutar ejemplos, usá bin/run.
+EOF
+}
+
+fail() {
+  printf '%s\n' "$1" >&2
+  exit "${2:-1}"
+}
+
+command_available() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+docker_compose_available() {
+  command_available docker && docker compose version >/dev/null 2>&1
+}
+
+docker_daemon_available() {
+  docker_compose_available && docker info >/dev/null 2>&1
+}
+
+bundler_available() {
+  command_available bundle
+}
+
+print_status_line() {
+  local label="$1"
+  local value="$2"
+  printf '  - %-22s %s\n' "$label" "$value"
+}
+
+show_checks() {
+  printf 'Estado del entorno:\n'
+
+  if command_available ruby; then
+    print_status_line "ruby" "disponible ($(ruby -v))"
+  else
+    print_status_line "ruby" "no disponible"
+  fi
+
+  if bundler_available; then
+    print_status_line "bundle" "disponible ($(bundle -v))"
+  else
+    print_status_line "bundle" "no disponible"
+  fi
+
+  if command_available docker; then
+    print_status_line "docker" "disponible ($(docker --version))"
+  else
+    print_status_line "docker" "no disponible"
+  fi
+
+  if docker_compose_available; then
+    print_status_line "docker compose" "disponible"
+  else
+    print_status_line "docker compose" "no disponible"
+  fi
+
+  if docker_daemon_available; then
+    print_status_line "docker daemon" "operativo"
+  else
+    print_status_line "docker daemon" "no operativo"
+  fi
+
+  if [[ -f "$ROOT_GEMFILE" ]]; then
+    print_status_line "Gemfile raíz" "presente"
+  else
+    print_status_line "Gemfile raíz" "ausente"
+  fi
+}
+
+setup_local() {
+  command_available ruby || fail "Ruby local no está disponible en PATH." 2
+
+  printf 'Ruby local detectado: %s\n' "$(ruby -v)"
+
+  if [[ -f "$ROOT_GEMFILE" ]]; then
+    bundler_available || fail "Hay Gemfile raíz, pero bundle no está disponible en PATH." 3
+    printf 'Instalando dependencias locales con bundle install...\n'
+    bundle install
+  else
+    printf 'No hay Gemfile raíz. Setup local validado; no hay dependencias del proyecto para instalar.\n'
+  fi
+}
+
+setup_docker() {
+  docker_daemon_available || fail "Docker Compose no está operativo para preparar el entorno." 4
+
+  printf 'Docker Compose operativo. Validando contenedor Ruby...\n'
+  docker compose run --rm ruby ruby -v >/dev/null
+
+  if [[ -f "$ROOT_GEMFILE" ]]; then
+    printf 'Instalando dependencias en contenedor con bundle install...\n'
+    docker compose run --rm ruby bundle install
+  else
+    printf 'No hay Gemfile raíz. Setup Docker validado; no hay dependencias del proyecto para instalar.\n'
+  fi
+}
+
+MODE="${1:-auto}"
+
+case "$MODE" in
+  -h|--help|help)
+    print_help
+    exit 0
+    ;;
+  check)
+    show_checks
+    exit 0
+    ;;
+  auto)
+    if docker_daemon_available; then
+      setup_docker
+    else
+      setup_local
+    fi
+    ;;
+  local)
+    setup_local
+    ;;
+  docker)
+    setup_docker
+    ;;
+  *)
+    fail "Modo inválido: $MODE. Usá 'bin/setup --help' para ver la ayuda." 1
+    ;;
+esac

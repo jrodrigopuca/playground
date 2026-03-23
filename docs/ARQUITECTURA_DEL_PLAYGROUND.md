@@ -185,6 +185,18 @@ La dirección acordada es usar un **`Gemfile` raíz**, pero de forma disciplinad
 - evitar convertir el repo en una bolsa de gems sin criterio;
 - documentar qué ejemplos usan dependencias externas cuando aplique.
 
+### Estado actual
+
+El `Gemfile` raíz inicial del playground queda limitado, por ahora, a dependencias realmente necesarias y portables.
+
+En esta etapa incluye:
+
+- `graphql`
+
+Y deja fuera, por ahora:
+
+- `tk`, por su mayor dependencia del sistema y menor portabilidad.
+
 ---
 
 ## Estrategia de ejecución
@@ -202,6 +214,36 @@ También se contempla la aparición de `bin/setup` para separar:
 
 - preparación de entorno;
 - ejecución de ejemplos.
+
+### Consideración importante para entorno local
+
+En macOS, no conviene asumir como base el Ruby provisto por el sistema operativo.
+
+Motivos:
+
+- suele venir desactualizado respecto al entorno objetivo del repo;
+- mezclar gems ahí puede afectar el entorno local del sistema;
+- genera diferencias innecesarias frente al runtime usado en Docker.
+
+### Dirección recomendada para entorno local
+
+El flujo local debería incorporar una capa previa de preparación del runtime, separada del setup del proyecto.
+
+#### Responsabilidades esperadas
+
+- `bin/pre-setup-local` → preparar un Ruby moderno y aislado del sistema;
+- `bin/setup` → validar entorno e instalar dependencias del proyecto;
+- `bin/run` → ejecutar ejemplos.
+
+### Estrategia sugerida
+
+- usar un version manager moderno para Ruby;
+- alinear la versión local con la versión base usada en Docker;
+- evitar instalar gems del proyecto sobre el Ruby del sistema.
+
+### Recomendación actual
+
+La estrategia adoptada es usar **`mise`** como version manager para el flujo local y apuntar a una versión moderna de Ruby alineada con Docker (`4.0.2`) mediante `mise.toml`.
 
 ---
 

@@ -90,7 +90,7 @@ Eso permite mantener una experiencia simple sin obligarte a recordar rutas larga
 
 ## Ejecución con Docker Compose
 
-Si querés ejecutar cosas manualmente con Docker Compose, hoy el repo trae un servicio `ruby` basado en `ruby:3.3`.
+Si querés ejecutar cosas manualmente con Docker Compose, hoy el repo trae un servicio `ruby` basado en `ruby:4.0.2`.
 
 Ejemplos:
 
@@ -127,6 +127,18 @@ bin/run lecciones 00
 - `docs/COMO_EJECUTAR.md`: guía operativa de ejecución.
 - `docs/MAPA_DEL_REPO.md`: mapa actual del repositorio.
 - `docs/COMO_AGREGAR_EJEMPLOS.md`: estándar para sumar ejemplos nuevos.
+
+## Dependencias del playground
+
+El repo ya cuenta con un `Gemfile` raíz mínimo.
+
+### Dependencias soportadas por Bundler
+
+- `graphql`
+
+### Dependencias especiales
+
+- `tk` sigue considerándose una dependencia especial del sistema y no forma parte del `Gemfile` raíz por ahora.
 
 ---
 

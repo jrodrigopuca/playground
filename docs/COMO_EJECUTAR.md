@@ -23,6 +23,7 @@ La forma recomendada hoy es **`bin/run`**.
 
 `bin/run` recibe:
 
+- un modo de ejecución opcional;
 - un grupo;
 - un archivo sin extensión;
 - argumentos opcionales.
@@ -32,7 +33,30 @@ Luego construye la ruta dentro de `examples/` y ejecuta el script.
 ### Sintaxis
 
 ```bash
+bin/run --help
+bin/run list
 bin/run <grupo> <archivo-sin-ext> [args...]
+bin/run auto <grupo> <archivo-sin-ext> [args...]
+bin/run local <grupo> <archivo-sin-ext> [args...]
+bin/run docker <grupo> <archivo-sin-ext> [args...]
+```
+
+### Modos disponibles
+
+- `auto`: prioriza Docker si está realmente disponible; si no, usa Ruby local.
+- `local`: fuerza ejecución con Ruby local.
+- `docker`: fuerza ejecución con Docker Compose.
+
+Si omitís el modo:
+
+```bash
+bin/run lecciones 00
+```
+
+el script lo interpreta como alias de:
+
+```bash
+bin/run auto lecciones 00
 ```
 
 ### Grupos válidos hoy
@@ -45,29 +69,53 @@ bin/run <grupo> <archivo-sin-ext> [args...]
 ### Ejemplos
 
 ```bash
+bin/run --help
+bin/run list
 bin/run lecciones 00
+bin/run auto practicas mind-reader
+bin/run local socket 08
+bin/run docker graph 01
 bin/run practicas mind-reader
-bin/run socket 08
-bin/run graph 01
 ```
 
 ### Cómo decide si usa Docker o local
 
 El comportamiento actual del script es este:
 
-1. si encuentra `docker` y `docker compose`, ejecuta dentro del contenedor;
-2. si no, intenta ejecutar con Ruby local.
+1. si el modo es `docker`, exige Docker Compose operativo;
+2. si el modo es `local`, exige Ruby local disponible;
+3. si el modo es `auto`, intenta Docker solo si:
+   - existe el comando `docker`;
+   - existe `docker compose`;
+   - el daemon de Docker está realmente accesible;
+4. si Docker no está operativo en modo `auto`, intenta ejecutar con Ruby local.
 
 ### Importante
 
-Hoy `bin/run` **no** pregunta qué modo querés usar.
+Ahora `bin/run` ya permite elegir el modo explícitamente.
 
-Si Docker Compose está disponible, lo prioriza automáticamente.
+Eso baja bastante la magia del script y hace más predecible la ejecución.
 
-Eso más adelante probablemente cambie, porque el plan del repo contempla una mejora para hacer más explícita la selección entre:
+También incorpora mejores mensajes de error cuando:
 
-- modo local;
-- modo Docker.
+- el grupo no existe;
+- el archivo no existe;
+- Ruby local no está disponible;
+- Docker Compose no está operativo.
+
+### Descubrimiento de ejemplos
+
+Para ver qué podés correr sin conocer la estructura de memoria:
+
+```bash
+bin/run list
+```
+
+Y para ver la ayuda completa:
+
+```bash
+bin/run --help
+```
 
 ---
 
@@ -82,7 +130,7 @@ Eso más adelante probablemente cambie, porque el plan del repo contempla una me
 
 El servicio `ruby` definido en `docker-compose.yml`:
 
-- usa `ruby:3.3`;
+- usa `ruby:4.0.2`;
 - monta el repo en `/app`;
 - mantiene `stdin_open` y `tty`, así que los scripts interactivos funcionan mejor;
 - cachea gems en el volumen `bundle`.
@@ -124,6 +172,51 @@ El `docker-compose.yml` actual expone el puerto `3000:9292`, pero en el estado a
 - tener Ruby instalado localmente;
 - tener disponibles las gems necesarias si el ejemplo usa dependencias externas.
 
+### Advertencia importante para macOS
+
+Si estás en macOS, **no es buena idea apoyarte en el Ruby del sistema** como base del playground.
+
+¿Y por qué? Porque normalmente:
+
+- viene desactualizado;
+- puede quedar demasiado acoplado al sistema operativo;
+- instalar gems ahí puede ensuciar o complicar tu entorno local;
+- te deja desalineado respecto al runtime objetivo del repo.
+
+### Recomendación actual para entorno local
+
+La dirección recomendada es esta:
+
+1. preparar un runtime local moderno y aislado del sistema;
+2. después ejecutar `bin/setup local`;
+3. recién ahí usar `bin/run local ...`.
+
+### Flujo local recomendado a futuro
+
+```bash
+bin/pre-setup-local
+bin/setup local
+bin/run local lecciones 00
+```
+
+### Estado actual de esa recomendación
+
+Hoy ese paso ya existe.
+
+El flujo local recomendado queda así:
+
+1. `bin/pre-setup-local check`
+2. `bin/pre-setup-local install`
+3. `bin/setup local`
+4. `bin/run local <grupo> <archivo>`
+
+### Qué hace `bin/pre-setup-local`
+
+- verifica si estás usando Ruby del sistema;
+- verifica si `mise` está disponible;
+- usa `mise.toml` como fuente de verdad para la versión local de Ruby;
+- prepara el runtime local antes del setup del proyecto.
+
 ### Ejemplos
 
 ```bash
@@ -144,6 +237,8 @@ Usar Ruby local conviene cuando querés:
 ### Riesgo actual del modo local
 
 Como el repo todavía no tiene un entorno unificado de dependencias en raíz, algunos ejemplos pueden requerir setup adicional en tu máquina.
+
+Además, si el Ruby local es viejo o viene del sistema operativo, podés terminar con diferencias importantes respecto al entorno Docker del repo.
 
 ---
 
@@ -184,6 +279,20 @@ No todos los ejemplos usan solo la librería estándar.
 
 En el estado actual del repo, esto todavía no está centralizado en un `Gemfile` raíz.
 
+### Estado actual del Gemfile raíz
+
+Ahora el repo ya tiene un `Gemfile` raíz mínimo.
+
+Actualmente cubre:
+
+- `graphql`
+
+### Qué sigue fuera del Gemfile
+
+- `tk`
+
+Ese caso sigue tratándose como dependencia especial del sistema y no como dependencia portable del playground.
+
 ---
 
 ## Problemas comunes
@@ -202,11 +311,21 @@ No hace falta poner `.rb`, aunque el script tolera que lo pases.
 
 ### 2. Docker está instalado pero querías correr local
 
-Hoy `bin/run` prioriza Docker automáticamente si está disponible.
+Ahora podés forzar modo local explícitamente:
 
-Si querés forzar modo local, por ahora tenés que ejecutar el script manualmente con `ruby`.
+```bash
+bin/run local lecciones 00
+```
 
-### 3. Falta una gem o dependencia del sistema
+Si preferís hacerlo manualmente, también podés ejecutar el script con `ruby`.
+
+### 3. Docker está instalado pero el daemon no está levantado
+
+En modo `auto`, el script ahora detecta ese caso y cae a Ruby local si puede.
+
+En modo `docker`, en cambio, falla explícitamente, que es lo correcto.
+
+### 4. Falta una gem o dependencia del sistema
 
 Esto puede pasar en ejemplos como GraphQL o `tk`.
 
@@ -224,6 +343,25 @@ La estrategia futura de ejecución y tooling está documentada en:
 - `docs/ARQUITECTURA_DEL_PLAYGROUND.md`
 
 Este documento se enfoca solo en cómo ejecutar el repo en su estado actual.
+
+### Estado actual del runner
+
+En este momento `bin/run` ya resuelve una base bastante mejor que antes:
+
+- ayuda;
+- listado de ejemplos;
+- modo `auto`;
+- modo `local`;
+- modo `docker`;
+- validaciones y errores más claros.
+
+### Próximo paso recomendado para entorno local
+
+Seguir fortaleciendo el flujo local alrededor de:
+
+- `mise.toml`;
+- `bin/pre-setup-local`;
+- `bin/setup local`.
 
 ---
 

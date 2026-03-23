@@ -72,12 +72,36 @@ Entonces, técnicamente, el repo hoy está así:
 - **Ruby** como lenguaje principal.
 - **Docker Compose** para ejecución aislada.
 - script `bin/run` para ejecutar ejemplos por grupo.
+- **Gemfile raíz** mínimo para dependencias portables del playground.
 
 ### Tecnologías visibles en ejemplos activos
 
 - `socket` estándar de Ruby en `examples/socket/`
 - `graphql` en `examples/graph/01.rb`
 - `tk` en `examples/lecciones/10.rb`
+
+### Estado actual de dependencias del repo
+
+Ahora el repositorio ya tiene un `Gemfile` raíz mínimo.
+
+En esta etapa cubre:
+
+- `graphql`
+
+Y deja como dependencia especial fuera del Gemfile:
+
+- `tk`
+
+### Observación sobre entorno local
+
+En el entorno actual relevado, Ruby local y Docker no están alineados:
+
+- Ruby local detectado: `2.6.10`
+- imagen Docker del repo: `ruby:4.0.2`
+
+Esto refuerza una decisión importante para el futuro del playground: conviene usar un paso previo de preparación del entorno local para no depender del Ruby del sistema, especialmente en macOS.
+
+En línea con eso, ya se incorporó `mise.toml` como base para fijar la versión local de Ruby y se definió `bin/pre-setup-local` como parte del flujo recomendado.
 
 ### Tecnologías históricas o actualmente removidas del working tree
 
@@ -160,7 +184,7 @@ El repo hoy ofrece dos formas claras de ejecución:
 
 El servicio `ruby`:
 
-- usa imagen `ruby:3.3`;
+- usa imagen `ruby:4.0.2`;
 - monta el repo en `/app`;
 - mantiene `stdin_open` y `tty` para scripts interactivos;
 - cachea gems en el volumen `bundle`;

@@ -1,35 +1,163 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Uso: bin/run <grupo> <archivo-sin-ext> [args...]
-#  grupo: lecciones | practicas | socket | graph
-#  ejemplo: bin/run lecciones 00
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_GEMFILE="$ROOT_DIR/Gemfile"
+RUN_GROUPS=(lecciones practicas socket graph)
 
-if [[ $# -lt 2 ]]; then
-  echo "Uso: $0 <lecciones|practicas|socket|graph> <nombre|numero> [args...]" >&2
-  exit 1
-fi
+cd "$ROOT_DIR"
 
-GRUPO="$1"
-ARCHIVO="$2"
-shift 2
+print_help() {
+  cat <<'EOF'
+Uso:
+  bin/run --help
+  bin/run list
+  bin/run <grupo> <archivo-sin-ext> [args...]
+  bin/run auto <grupo> <archivo-sin-ext> [args...]
+  bin/run local <grupo> <archivo-sin-ext> [args...]
+  bin/run docker <grupo> <archivo-sin-ext> [args...]
 
-case "$GRUPO" in
-  lecciones|practicas|socket|graph) ;;
-  *) echo "Grupo inválido: $GRUPO" >&2; exit 2;;
+Grupos disponibles:
+  - lecciones
+  - practicas
+  - socket
+  - graph
+
+Ejemplos:
+  bin/run list
+  bin/run lecciones 00
+  bin/run auto practicas mind-reader
+  bin/run local socket 08
+  bin/run docker graph 01
+
+Notas:
+  - 'auto' prioriza Docker Compose si está disponible y, si no, usa Ruby local.
+  - También podés omitir el modo: 'bin/run lecciones 00' funciona como alias de 'auto'.
+EOF
+}
+
+group_exists() {
+  local requested="$1"
+
+  for group in "${RUN_GROUPS[@]}"; do
+    if [[ "$group" == "$requested" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+docker_available() {
+  command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1 && docker info >/dev/null 2>&1
+}
+
+ruby_available() {
+  command -v ruby >/dev/null 2>&1
+}
+
+bundler_available() {
+  command -v bundle >/dev/null 2>&1
+}
+
+print_groups() {
+  printf 'Grupos disponibles:\n'
+  for group in "${RUN_GROUPS[@]}"; do
+    printf '  - %s\n' "$group"
+  done
+}
+
+list_examples() {
+  local group file name
+
+  print_groups
+  printf '\nEjemplos por grupo:\n'
+
+  for group in "${RUN_GROUPS[@]}"; do
+    printf '\n[%s]\n' "$group"
+
+    for file in "examples/${group}"/*.rb; do
+      [[ -e "$file" ]] || continue
+      name="${file##*/}"
+      name="${name%.rb}"
+      printf '  - %s\n' "$name"
+    done
+  done
+}
+
+fail() {
+  printf '%s\n' "$1" >&2
+  exit "${2:-1}"
+}
+
+run_local() {
+  local path="$1"
+  shift
+
+  ruby_available || fail "Ruby local no está disponible en PATH." 4
+
+  if [[ -f "$ROOT_GEMFILE" ]]; then
+    bundler_available || fail "Hay Gemfile raíz, pero bundle no está disponible en PATH." 6
+    exec bundle exec ruby "$path" "$@"
+  fi
+
+  exec ruby "$path" "$@"
+}
+
+run_docker() {
+  local path="$1"
+  shift
+
+  docker_available || fail "Docker Compose no está disponible para ejecutar este ejemplo." 5
+
+  if [[ -f "$ROOT_GEMFILE" ]]; then
+    exec docker compose run --rm ruby bundle exec ruby "$path" "$@"
+  fi
+
+  exec docker compose run --rm ruby ruby "$path" "$@"
+}
+
+MODE="auto"
+
+case "${1:-}" in
+  ""|-h|--help|help)
+    print_help
+    exit 0
+    ;;
+  list)
+    list_examples
+    exit 0
+    ;;
+  auto|local|docker)
+    MODE="$1"
+    shift
+    ;;
 esac
 
-RUTA="examples/${GRUPO}/${ARCHIVO%.rb}.rb"
+[[ $# -ge 2 ]] || fail "Argumentos insuficientes. Usá 'bin/run --help' para ver la ayuda." 1
 
-if [[ ! -f "$RUTA" ]]; then
-  echo "No existe: $RUTA" >&2
-  exit 3
-fi
+GROUP="$1"
+FILE_NAME="$2"
+shift 2
 
-if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
-  # Ejecutar dentro del contenedor si existe compose
-  exec docker compose run --rm ruby ruby "$RUTA" "$@"
-else
-  # Ejecutar localmente
-  exec ruby "$RUTA" "$@"
-fi
+group_exists "$GROUP" || fail "Grupo inválido: $GROUP. Usá 'bin/run list' para ver opciones disponibles." 2
+
+PATH_TO_FILE="examples/${GROUP}/${FILE_NAME%.rb}.rb"
+
+[[ -f "$PATH_TO_FILE" ]] || fail "No existe: $PATH_TO_FILE. Usá 'bin/run list' para ver ejemplos disponibles." 3
+
+case "$MODE" in
+  auto)
+    if docker_available; then
+      run_docker "$PATH_TO_FILE" "$@"
+    else
+      run_local "$PATH_TO_FILE" "$@"
+    fi
+    ;;
+  local)
+    run_local "$PATH_TO_FILE" "$@"
+    ;;
+  docker)
+    run_docker "$PATH_TO_FILE" "$@"
+    ;;
+esac

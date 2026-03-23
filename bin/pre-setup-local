@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+MISE_FILE="$ROOT_DIR/mise.toml"
+
+print_help() {
+  cat <<'EOF'
+Uso:
+  bin/pre-setup-local --help
+  bin/pre-setup-local check
+  bin/pre-setup-local install
+
+Comandos:
+  check    Verifica el estado del Ruby local y la disponibilidad de mise.
+  install  Instala o prepara la versión de Ruby definida en mise.toml.
+
+Notas:
+  - Este script está pensado para entorno local, especialmente macOS.
+  - La idea es evitar usar el Ruby del sistema como base del playground.
+  - Después de este paso, usá bin/setup local y luego bin/run local ...
+EOF
+}
+
+fail() {
+  printf '%s\n' "$1" >&2
+  exit "${2:-1}"
+}
+
+command_available() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+status_line() {
+  local label="$1"
+  local value="$2"
+  printf '  - %-24s %s\n' "$label" "$value"
+}
+
+configured_ruby_version() {
+  awk -F '"' '/ruby = / {print $2}' "$MISE_FILE"
+}
+
+show_check() {
+  local ruby_path=""
+  local ruby_version=""
+  local configured_version
+
+  configured_version="$(configured_ruby_version)"
+
+  printf 'Estado del pre-setup local:\n'
+  status_line "mise.toml" "presente (${configured_version})"
+
+  if command_available mise; then
+    status_line "mise" "disponible ($(mise --version))"
+  else
+    status_line "mise" "no disponible"
+  fi
+
+  if command_available ruby; then
+    ruby_path="$(command -v ruby)"
+    ruby_version="$(ruby -v)"
+    status_line "ruby" "disponible (${ruby_version})"
+    status_line "ruby path" "$ruby_path"
+
+    if [[ "$ruby_path" == "/usr/bin/ruby" ]]; then
+      status_line "diagnóstico" "estás usando el Ruby del sistema"
+    else
+      status_line "diagnóstico" "no parece ser el Ruby del sistema"
+    fi
+  else
+    status_line "ruby" "no disponible"
+  fi
+}
+
+install_mise_hint() {
+  cat <<'EOF'
+mise no está instalado.
+
+Recomendación en macOS:
+  brew install mise
+
+Luego activalo en tu shell según la documentación oficial de mise.
+Después de eso, volvé a ejecutar:
+  bin/pre-setup-local install
+EOF
+}
+
+install_runtime() {
+  local configured_version
+  configured_version="$(configured_ruby_version)"
+
+  command_available mise || {
+    install_mise_hint
+    exit 2
+  }
+
+  printf 'Instalando runtime local con mise (ruby %s)...\n' "$configured_version"
+  mise install
+
+  printf '\nRuntime configurado. Próximos pasos:\n'
+  printf '  1. Verificá el entorno con: mise current\n'
+  printf '  2. Si tu shell no toma mise automáticamente, activalo según la doc de mise\n'
+  printf '  3. Después corré: bin/setup local\n'
+  printf '  4. Finalmente ejecutá ejemplos con: bin/run local <grupo> <archivo>\n'
+}
+
+MODE="${1:-check}"
+
+[[ -f "$MISE_FILE" ]] || fail "No existe $MISE_FILE. No se puede preparar el entorno local." 1
+
+case "$MODE" in
+  -h|--help|help)
+    print_help
+    exit 0
+    ;;
+  check)
+    show_check
+    ;;
+  install)
+    install_runtime
+    ;;
+  *)
+    fail "Modo inválido: $MODE. Usá 'bin/pre-setup-local --help' para ver la ayuda." 1
+    ;;
+esac
