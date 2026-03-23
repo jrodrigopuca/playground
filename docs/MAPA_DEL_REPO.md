@@ -27,10 +27,13 @@ La idea es que sirva como puente entre:
 │   ├── ESTADO_ACTUAL.md
 │   └── ARQUITECTURA_DEL_PLAYGROUND.md
 └── examples/
-    ├── graph/
-    ├── lecciones/
-    ├── practicas/
-    └── socket/
+    ├── basics/
+    ├── cli/
+    ├── collections/
+    ├── experiments/
+    ├── io/
+    ├── networking/
+    └── oop/
 ```
 
 ---
@@ -95,7 +98,7 @@ Script actual para ejecutar ejemplos por grupo.
 
 ### Observaciones
 
-- hoy soporta `lecciones`, `practicas`, `socket` y `graph`;
+- hoy soporta compatibilidad transitoria para `lecciones`, `practicas` y `socket`, además de las nuevas categorías por dominio;
 - todavía no ofrece `list`, `--help` ni selección explícita entre local y Docker;
 - más adelante se prevé la aparición de `bin/setup`.
 
@@ -171,155 +174,19 @@ La estructura actual funciona, pero mezcla criterios pedagógicos y técnicos. P
 
 ## Mapa de `examples/` en el estado actual
 
-### `examples/lecciones/`
+### Estado actual de la estructura por dominios
 
-Contiene ejemplos numerados orientados a fundamentos del lenguaje.
+La estructura dominante del repositorio ya pasó a ser esta:
 
-### Contenido visible
+- `examples/basics/`
+- `examples/cli/`
+- `examples/collections/`
+- `examples/experiments/`
+- `examples/io/`
+- `examples/networking/`
+- `examples/oop/`
 
-- `00.rb`
-- `01.rb`
-- `02.rb`
-- `03.rb`
-- `04.rb`
-- `05.rb`
-- `06.rb`
-- `07.rb`
-- `08.rb`
-- `09.rb`
-- `10.rb`
-- `11.rb`
-- `12.rb`
-
-### Rol actual
-
-- base educativa del repo;
-- introducción a conceptos centrales de Ruby.
-
-### Estado
-
-**Activo y relativamente estable**.
-
-### Tipo de contenido
-
-- fundamentos;
-- estructuras de datos;
-- métodos;
-- clases;
-- control de flujo;
-- archivos;
-- GUI (`tk`).
-
-### Destino probable en la futura estructura
-
-No debería quedar como una sola carpeta monolítica. Lo razonable sería repartir su contenido entre dominios como:
-
-- `basics/`
-- `io/`
-- `experiments/`
-
----
-
-### `examples/practicas/`
-
-Contiene ejercicios cortos y scripts manuales.
-
-### Contenido visible
-
-- `mind-reader.rb`
-- `roller.rb`
-- `speed.rb`
-- `simple_stats.rb`
-- `math-method.rb`
-- `get-data.rb`
-
-### Rol actual
-
-- práctica manual;
-- pequeños ejercicios de entrada/salida y lógica.
-
-### Estado
-
-**Activo**.
-
-### Tipo de contenido
-
-- scripts de consola;
-- ejercicios cortos;
-- ejemplos interactivos.
-
-### Destino probable en la futura estructura
-
-Podría distribuirse entre:
-
-- `cli/`
-- `io/`
-- `basics/`
-- `experiments/`
-
----
-
-### `examples/socket/`
-
-Contiene pruebas de comunicación TCP.
-
-### Contenido visible
-
-- `08.rb`
-- `09.rb`
-- `10.rb`
-- `11.rb`
-
-### Rol actual
-
-- experimentación con networking;
-- pruebas de cliente/servidor.
-
-### Estado
-
-**Activo pero experimental**.
-
-### Observaciones
-
-- `08.rb` y `09.rb` representan la base más clara de servidor/cliente;
-- `10.rb` tiene un problema de alcance con la variable `clientes`;
-- el grupo completo debería considerarse material de experimentación técnica.
-
-### Destino probable en la futura estructura
-
-- `networking/`
-- eventualmente algunos casos podrían marcarse explícitamente como `experiments/`.
-
----
-
-### `examples/graph/`
-
-Contiene un ejemplo mínimo vinculado a GraphQL.
-
-### Contenido visible
-
-- `01.rb`
-
-### Rol actual
-
-- ejemplo puntual con dependencia externa;
-- demostración aislada de uso de gem.
-
-### Estado
-
-**Activo, pero muy acotado**.
-
-### Observaciones
-
-- no representa una categoría completa todavía;
-- conceptualmente encaja más como ejemplo de gem externa que como dominio amplio.
-
-### Destino probable en la futura estructura
-
-- `gems/`
-- o `experiments/`, según cómo evolucione el repo.
-
----
+Los grupos históricos (`lecciones`, `practicas`, `socket`) ya no son la estructura activa del contenido. Hoy solo sobreviven como compatibilidad transitoria en `bin/run`.
 
 ## Contenido fuera del flujo activo
 
@@ -350,6 +217,53 @@ Esto no es todavía una migración ejecutada. Es una guía de cómo pensar el tr
 - archivos → `io/`
 - GUI o casos raros → `experiments/`
 
+### Estado de migración actual desde `lecciones/`
+
+Primer lote ya migrado:
+
+- `examples/lecciones/09.rb` → `examples/io/file-reading.rb`
+- `examples/lecciones/10.rb` → `examples/experiments/tk-gui.rb`
+- `examples/lecciones/11.rb` → `examples/io/user-input.rb`
+
+Segundo lote ya migrado:
+
+- `examples/lecciones/00.rb` → `examples/basics/types-and-booleans.rb`
+- `examples/lecciones/01.rb` → `examples/basics/strings.rb`
+- `examples/lecciones/07.rb` → `examples/basics/control-flow.rb`
+- `examples/lecciones/12.rb` → `examples/basics/percent-notation-and-bang-methods.rb`
+
+Tercer lote ya migrado:
+
+- `examples/lecciones/02.rb` → `examples/collections/arrays-and-ranges.rb`
+- `examples/lecciones/03.rb` → `examples/collections/hashes.rb`
+- `examples/lecciones/08.rb` → `examples/collections/iterators-and-enumerators.rb`
+
+Cuarto lote ya migrado:
+
+- `examples/lecciones/04.rb` → `examples/oop/methods-classes-and-inheritance.rb`
+- `examples/lecciones/05.rb` → `examples/oop/scope-and-metaprogramming.rb`
+- `examples/lecciones/06.rb` → `examples/oop/singleton-methods-and-procs.rb`
+
+### Compatibilidad transitoria
+
+Durante esta etapa, `bin/run` mantiene compatibilidad con:
+
+- `bin/run lecciones 09`
+- `bin/run lecciones 10`
+- `bin/run lecciones 11`
+- `bin/run lecciones 00`
+- `bin/run lecciones 01`
+- `bin/run lecciones 02`
+- `bin/run lecciones 03`
+- `bin/run lecciones 04`
+- `bin/run lecciones 05`
+- `bin/run lecciones 06`
+- `bin/run lecciones 07`
+- `bin/run lecciones 08`
+- `bin/run lecciones 12`
+
+aunque los archivos ya vivan en la nueva estructura.
+
 ### Desde `practicas/`
 
 - scripts interactivos → `cli/`
@@ -357,16 +271,54 @@ Esto no es todavía una migración ejecutada. Es una guía de cómo pensar el tr
 - ejercicios simples de lógica → `basics/`
 - ejemplos más abiertos o raros → `experiments/`
 
+### Estado de migración actual desde `practicas/`
+
+Lote ya migrado:
+
+- `examples/practicas/mind-reader.rb` → `examples/cli/mind-reader.rb`
+- `examples/practicas/roller.rb` → `examples/cli/roller.rb`
+- `examples/practicas/speed.rb` → `examples/basics/speed-rules.rb`
+- `examples/practicas/simple_stats.rb` → `examples/basics/simple-stats.rb`
+- `examples/practicas/math-method.rb` → `examples/oop/math-with-blocks.rb`
+- `examples/practicas/get-data.rb` → `examples/experiments/get-data.rb`
+
+### Compatibilidad transitoria
+
+Durante esta etapa, `bin/run` mantiene compatibilidad con:
+
+- `bin/run practicas mind-reader`
+- `bin/run practicas roller`
+- `bin/run practicas speed`
+- `bin/run practicas simple_stats`
+- `bin/run practicas math-method`
+- `bin/run practicas get-data`
+
+aunque los archivos ya vivan en la nueva estructura.
+
 ### Desde `socket/`
 
 - cliente / servidor TCP → `networking/`
 - pruebas incompletas o inestables → `experiments/` si corresponde.
 
-### Desde `graph/`
+### Estado de migración actual desde `socket/`
 
-- ejemplo con GraphQL → `gems/`
+Lote ya migrado:
 
----
+- `examples/socket/08.rb` → `examples/networking/tcp-server-basic.rb`
+- `examples/socket/09.rb` → `examples/networking/tcp-client-basic.rb`
+- `examples/socket/10.rb` → `examples/experiments/tcp-broadcast-attempt.rb`
+- `examples/socket/11.rb` → `examples/networking/tcp-client-interactive.rb`
+
+### Compatibilidad transitoria
+
+Durante esta etapa, `bin/run` mantiene compatibilidad con:
+
+- `bin/run socket 08`
+- `bin/run socket 09`
+- `bin/run socket 10`
+- `bin/run socket 11`
+
+aunque los archivos ya vivan en la nueva estructura.
 
 ## Cómo leer este mapa
 

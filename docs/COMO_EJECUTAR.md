@@ -61,21 +61,31 @@ bin/run auto lecciones 00
 
 ### Grupos válidos hoy
 
+- `basics`
+- `cli`
+- `collections`
+- `experiments`
+- `io`
+- `networking`
+- `oop`
+
+### Compatibilidad transitoria
+
+El runner mantiene compatibilidad con grupos históricos como:
+
 - `lecciones`
 - `practicas`
 - `socket`
-- `graph`
 
 ### Ejemplos
 
 ```bash
 bin/run --help
 bin/run list
+bin/run local basics strings
+bin/run local cli mind-reader
+bin/run local networking tcp-client-basic
 bin/run lecciones 00
-bin/run auto practicas mind-reader
-bin/run local socket 08
-bin/run docker graph 01
-bin/run practicas mind-reader
 ```
 
 ### Cómo decide si usa Docker o local
@@ -142,13 +152,13 @@ El servicio `ruby` definido en `docker-compose.yml`:
 docker compose run --rm ruby irb
 
 # Ejecutar un ejemplo directamente
-docker compose run --rm ruby ruby examples/lecciones/00.rb
+docker compose run --rm ruby ruby examples/basics/types-and-booleans.rb
 
 # Ejecutar un script interactivo
-docker compose run --rm ruby ruby examples/practicas/mind-reader.rb
+docker compose run --rm ruby ruby examples/cli/mind-reader.rb
 
 # Ejecutar un ejemplo de sockets
-docker compose run --rm ruby ruby examples/socket/08.rb
+docker compose run --rm ruby ruby examples/networking/tcp-server-basic.rb
 ```
 
 ### Cuándo conviene usar Docker
@@ -196,7 +206,7 @@ La dirección recomendada es esta:
 ```bash
 bin/pre-setup-local
 bin/setup local
-bin/run local lecciones 00
+bin/run local basics types-and-booleans
 ```
 
 ### Estado actual de esa recomendación
@@ -220,10 +230,9 @@ El flujo local recomendado queda así:
 ### Ejemplos
 
 ```bash
-ruby examples/lecciones/00.rb
-ruby examples/practicas/mind-reader.rb
-ruby examples/socket/08.rb
-ruby examples/graph/01.rb
+ruby examples/basics/types-and-booleans.rb
+ruby examples/cli/mind-reader.rb
+ruby examples/networking/tcp-server-basic.rb
 ```
 
 ### Cuándo conviene usar local
@@ -249,13 +258,13 @@ Algunos scripts esperan entrada del usuario usando `gets`.
 Ejemplo:
 
 ```bash
-bin/run practicas mind-reader
+bin/run cli mind-reader
 ```
 
 O manualmente:
 
 ```bash
-docker compose run --rm ruby ruby examples/practicas/mind-reader.rb
+docker compose run --rm ruby ruby examples/cli/mind-reader.rb
 ```
 
 Gracias a que el contenedor actual tiene `stdin_open` y `tty`, este tipo de scripts debería comportarse razonablemente bien dentro de Docker.
@@ -268,24 +277,19 @@ No todos los ejemplos usan solo la librería estándar.
 
 ### Casos detectados en el repo actual
 
-- `examples/socket/*` usa `socket` de Ruby;
-- `examples/graph/01.rb` usa `graphql`;
-- `examples/lecciones/10.rb` usa `tk`.
+- `examples/networking/*` usa `socket` de Ruby;
+- `examples/experiments/tk-gui.rb` usa `tk`.
 
 ### Qué implica esto
 
 - algunos ejemplos correrán sin problema en una instalación Ruby estándar;
 - otros pueden requerir gems o soporte adicional del entorno.
 
-En el estado actual del repo, esto todavía no está centralizado en un `Gemfile` raíz.
+En el estado actual del repo, esto ya no implica gems activas del playground en el `Gemfile` raíz.
 
 ### Estado actual del Gemfile raíz
 
-Ahora el repo ya tiene un `Gemfile` raíz mínimo.
-
-Actualmente cubre:
-
-- `graphql`
+Ahora el repo ya tiene un `Gemfile` raíz mínimo, pero por el momento no declara gems activas del playground.
 
 ### Qué sigue fuera del Gemfile
 
@@ -304,7 +308,7 @@ Esto pasa cuando el grupo o el nombre del archivo no coinciden con un script rea
 Ejemplo válido:
 
 ```bash
-bin/run practicas roller
+bin/run cli roller
 ```
 
 No hace falta poner `.rb`, aunque el script tolera que lo pases.
@@ -314,7 +318,7 @@ No hace falta poner `.rb`, aunque el script tolera que lo pases.
 Ahora podés forzar modo local explícitamente:
 
 ```bash
-bin/run local lecciones 00
+bin/run local basics types-and-booleans
 ```
 
 Si preferís hacerlo manualmente, también podés ejecutar el script con `ruby`.
@@ -327,7 +331,7 @@ En modo `docker`, en cambio, falla explícitamente, que es lo correcto.
 
 ### 4. Falta una gem o dependencia del sistema
 
-Esto puede pasar en ejemplos como GraphQL o `tk`.
+Esto puede pasar en ejemplos como `tk`.
 
 En ese caso tenés dos caminos:
 
@@ -376,10 +380,10 @@ Si querés usar el repo hoy sin vueltas:
 ## Ejemplos rápidos para arrancar
 
 ```bash
-bin/run lecciones 00
-bin/run practicas simple_stats
-bin/run socket 08
-bin/run graph 01
+bin/run basics types-and-booleans
+bin/run basics simple-stats
+bin/run cli mind-reader
+bin/run networking tcp-client-basic
 ```
 
 ---

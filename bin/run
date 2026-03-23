@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ROOT_GEMFILE="$ROOT_DIR/Gemfile"
-RUN_GROUPS=(lecciones practicas socket graph)
+RUN_GROUPS=(lecciones practicas socket io experiments basics collections oop cli networking)
 
 cd "$ROOT_DIR"
 
@@ -21,14 +21,26 @@ Grupos disponibles:
   - lecciones
   - practicas
   - socket
-  - graph
+  - io
+  - experiments
+  - basics
+  - collections
+  - oop
+  - cli
+  - networking
 
 Ejemplos:
   bin/run list
   bin/run lecciones 00
   bin/run auto practicas mind-reader
   bin/run local socket 08
-  bin/run docker graph 01
+  bin/run local io file-reading
+  bin/run local experiments tk-gui
+  bin/run local basics strings
+  bin/run local collections hashes
+  bin/run local oop methods-classes-and-inheritance
+  bin/run local cli roller
+  bin/run local networking tcp-server-basic
 
 Notas:
   - 'auto' prioriza Docker Compose si está disponible y, si no, usa Ruby local.
@@ -44,6 +56,127 @@ group_exists() {
       return 0
     fi
   done
+
+  return 1
+}
+
+resolve_path() {
+  local group="$1"
+  local file_name="$2"
+  local normalized="${file_name%.rb}"
+  local candidate="examples/${group}/${normalized}.rb"
+
+  if [[ -f "$candidate" ]]; then
+    printf '%s\n' "$candidate"
+    return 0
+  fi
+
+  if [[ "$group" == "lecciones" ]]; then
+    case "$normalized" in
+      00)
+        printf '%s\n' "examples/basics/types-and-booleans.rb"
+        return 0
+        ;;
+      01)
+        printf '%s\n' "examples/basics/strings.rb"
+        return 0
+        ;;
+      02)
+        printf '%s\n' "examples/collections/arrays-and-ranges.rb"
+        return 0
+        ;;
+      03)
+        printf '%s\n' "examples/collections/hashes.rb"
+        return 0
+        ;;
+      04)
+        printf '%s\n' "examples/oop/methods-classes-and-inheritance.rb"
+        return 0
+        ;;
+      05)
+        printf '%s\n' "examples/oop/scope-and-metaprogramming.rb"
+        return 0
+        ;;
+      06)
+        printf '%s\n' "examples/oop/singleton-methods-and-procs.rb"
+        return 0
+        ;;
+      09)
+        printf '%s\n' "examples/io/file-reading.rb"
+        return 0
+        ;;
+      10)
+        printf '%s\n' "examples/experiments/tk-gui.rb"
+        return 0
+        ;;
+      11)
+        printf '%s\n' "examples/io/user-input.rb"
+        return 0
+        ;;
+      07)
+        printf '%s\n' "examples/basics/control-flow.rb"
+        return 0
+        ;;
+      08)
+        printf '%s\n' "examples/collections/iterators-and-enumerators.rb"
+        return 0
+        ;;
+      12)
+        printf '%s\n' "examples/basics/percent-notation-and-bang-methods.rb"
+        return 0
+        ;;
+    esac
+  fi
+
+  if [[ "$group" == "practicas" ]]; then
+    case "$normalized" in
+      mind-reader)
+        printf '%s\n' "examples/cli/mind-reader.rb"
+        return 0
+        ;;
+      roller)
+        printf '%s\n' "examples/cli/roller.rb"
+        return 0
+        ;;
+      speed)
+        printf '%s\n' "examples/basics/speed-rules.rb"
+        return 0
+        ;;
+      simple_stats)
+        printf '%s\n' "examples/basics/simple-stats.rb"
+        return 0
+        ;;
+      math-method)
+        printf '%s\n' "examples/oop/math-with-blocks.rb"
+        return 0
+        ;;
+      get-data)
+        printf '%s\n' "examples/experiments/get-data.rb"
+        return 0
+        ;;
+    esac
+  fi
+
+  if [[ "$group" == "socket" ]]; then
+    case "$normalized" in
+      08)
+        printf '%s\n' "examples/networking/tcp-server-basic.rb"
+        return 0
+        ;;
+      09)
+        printf '%s\n' "examples/networking/tcp-client-basic.rb"
+        return 0
+        ;;
+      10)
+        printf '%s\n' "examples/experiments/tcp-broadcast-attempt.rb"
+        return 0
+        ;;
+      11)
+        printf '%s\n' "examples/networking/tcp-client-interactive.rb"
+        return 0
+        ;;
+    esac
+  fi
 
   return 1
 }
@@ -142,9 +275,7 @@ shift 2
 
 group_exists "$GROUP" || fail "Grupo inválido: $GROUP. Usá 'bin/run list' para ver opciones disponibles." 2
 
-PATH_TO_FILE="examples/${GROUP}/${FILE_NAME%.rb}.rb"
-
-[[ -f "$PATH_TO_FILE" ]] || fail "No existe: $PATH_TO_FILE. Usá 'bin/run list' para ver ejemplos disponibles." 3
+PATH_TO_FILE="$(resolve_path "$GROUP" "$FILE_NAME")" || fail "No existe un ejemplo para grupo=$GROUP archivo=${FILE_NAME%.rb}. Usá 'bin/run list' para ver ejemplos disponibles." 3
 
 case "$MODE" in
   auto)

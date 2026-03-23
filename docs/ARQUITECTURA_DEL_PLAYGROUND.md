@@ -94,7 +94,6 @@ examples/
   lecciones/
   practicas/
   socket/
-  graph/
 ```
 
 ### Problema de la estructura actual
@@ -189,9 +188,7 @@ La dirección acordada es usar un **`Gemfile` raíz**, pero de forma disciplinad
 
 El `Gemfile` raíz inicial del playground queda limitado, por ahora, a dependencias realmente necesarias y portables.
 
-En esta etapa incluye:
-
-- `graphql`
+En esta etapa no incluye gems activas del playground.
 
 Y deja fuera, por ahora:
 

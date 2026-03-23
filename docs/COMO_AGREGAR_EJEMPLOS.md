@@ -122,7 +122,6 @@ Para ejemplos que dependen de gems externas.
 
 Ejemplos típicos:
 
-- GraphQL;
 - parsing especializado con librerías;
 - gems que ilustran un concepto puntual.
 
@@ -204,7 +203,6 @@ Los nombres deberían:
 - `array-iteration.rb`
 - `file-reading.rb`
 - `tcp-server-basic.rb`
-- `graphql-basic-query.rb`
 
 ### Ejemplos de malos nombres
 

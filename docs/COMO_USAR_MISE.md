@@ -155,7 +155,7 @@ Las dependencias del proyecto siguen perteneciendo al flujo de:
 bin/setup local
 ```
 
-En el estado actual del repo, eso ya incluye soporte para instalar la gem declarada en el `Gemfile` raíz (`graphql`).
+En el estado actual del repo, ese paso queda listo para instalar futuras dependencias del `Gemfile` raíz cuando el playground las necesite.
 
 ---
 

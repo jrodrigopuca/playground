@@ -40,18 +40,24 @@ Hoy el repo está organizado así:
 │   ├── ESTADO_ACTUAL.md
 │   └── ARQUITECTURA_DEL_PLAYGROUND.md
 └── examples/
-    ├── graph/
-    ├── lecciones/
-    ├── practicas/
-    └── socket/
+    ├── basics/
+    ├── cli/
+    ├── collections/
+    ├── experiments/
+    ├── io/
+    ├── networking/
+    └── oop/
 ```
 
 ### Carpetas activas
 
-- `examples/lecciones/`: ejemplos de fundamentos y conceptos base de Ruby.
-- `examples/practicas/`: ejercicios cortos y scripts de práctica manual.
-- `examples/socket/`: pruebas experimentales con sockets TCP.
-- `examples/graph/`: ejemplo puntual con GraphQL.
+- `examples/basics/`: fundamentos y reglas básicas del lenguaje.
+- `examples/cli/`: scripts interactivos de consola.
+- `examples/collections/`: arrays, hashes, rangos e iteradores.
+- `examples/experiments/`: pruebas inestables o exploratorias.
+- `examples/io/`: archivos y entrada/salida.
+- `examples/networking/`: ejemplos TCP y sockets.
+- `examples/oop/`: métodos, clases, herencia y metaprogramación.
 
 ## Cómo ejecutar ejemplos
 
@@ -65,18 +71,26 @@ bin/run <grupo> <archivo-sin-ext>
 
 ### Grupos disponibles hoy
 
+- `basics`
+- `cli`
+- `collections`
+- `experiments`
+- `io`
+- `networking`
+- `oop`
+
+Además, `bin/run` mantiene compatibilidad transitoria con aliases históricos como:
+
 - `lecciones`
 - `practicas`
 - `socket`
-- `graph`
 
 ### Ejemplos
 
 ```bash
-bin/run lecciones 00
-bin/run practicas mind-reader
-bin/run socket 08
-bin/run graph 01
+bin/run basics strings
+bin/run cli mind-reader
+bin/run networking tcp-client-basic
 ```
 
 ## Cómo funciona `bin/run`
@@ -99,10 +113,10 @@ Ejemplos:
 docker compose run --rm ruby irb
 
 # Ejecutar un script de forma manual
-docker compose run --rm ruby ruby examples/lecciones/00.rb
+docker compose run --rm ruby ruby examples/basics/types-and-booleans.rb
 
 # Ejecutar un script interactivo
-docker compose run --rm ruby ruby examples/practicas/mind-reader.rb
+docker compose run --rm ruby ruby examples/cli/mind-reader.rb
 ```
 
 ## Ejecución local
@@ -110,14 +124,14 @@ docker compose run --rm ruby ruby examples/practicas/mind-reader.rb
 Si no usás Docker, también podés correr ejemplos con Ruby instalado localmente:
 
 ```bash
-ruby examples/lecciones/00.rb
-ruby examples/practicas/mind-reader.rb
+ruby examples/basics/types-and-booleans.rb
+ruby examples/cli/mind-reader.rb
 ```
 
 O, mejor todavía, usar:
 
 ```bash
-bin/run lecciones 00
+bin/run basics types-and-booleans
 ```
 
 ## Documentación disponible
@@ -131,10 +145,6 @@ bin/run lecciones 00
 ## Dependencias del playground
 
 El repo ya cuenta con un `Gemfile` raíz mínimo.
-
-### Dependencias soportadas por Bundler
-
-- `graphql`
 
 ### Dependencias especiales
 

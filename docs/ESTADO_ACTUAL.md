@@ -17,7 +17,7 @@ Por estructura y archivos realmente presentes en el working tree, este repo hoy 
 
 - aprender fundamentos de Ruby;
 - practicar con scripts interactivos;
-- probar sockets y un ejemplo mínimo de GraphQL;
+- probar sockets y ejemplos chicos de consola;
 - ejecutar ejemplos manualmente con `bin/run` o Docker Compose.
 
 ## Estructura actual del working tree
@@ -33,10 +33,13 @@ Por estructura y archivos realmente presentes en el working tree, este repo hoy 
 ├── docs/
 │   └── ESTADO_ACTUAL.md
 └── examples/
-    ├── lecciones/
-    ├── practicas/
-    ├── socket/
-    └── graph/
+    ├── basics/
+    ├── cli/
+    ├── collections/
+    ├── experiments/
+    ├── io/
+    ├── networking/
+    └── oop/
 ```
 
 ## Diferencia entre working tree y Git
@@ -76,19 +79,14 @@ Entonces, técnicamente, el repo hoy está así:
 
 ### Tecnologías visibles en ejemplos activos
 
-- `socket` estándar de Ruby en `examples/socket/`
-- `graphql` en `examples/graph/01.rb`
-- `tk` en `examples/lecciones/10.rb`
+- `socket` estándar de Ruby en `examples/networking/`
+- `tk` en `examples/experiments/tk-gui.rb`
 
 ### Estado actual de dependencias del repo
 
-Ahora el repositorio ya tiene un `Gemfile` raíz mínimo.
+Ahora el repositorio ya tiene un `Gemfile` raíz mínimo, pero por el momento no declara gems activas del playground.
 
-En esta etapa cubre:
-
-- `graphql`
-
-Y deja como dependencia especial fuera del Gemfile:
+La dependencia especial que sigue fuera del Gemfile es:
 
 - `tk`
 
@@ -116,52 +114,31 @@ Pero OJO: eso hoy no está presente en el árbol de trabajo. Así que no corresp
 
 ## Estado por área
 
-### 1. `examples/lecciones/`
+### 1. `examples/basics/`, `collections/`, `io/`, `oop/`, `cli/`
 
-Sigue siendo la zona más consistente del repo.
+Estas carpetas concentran ahora la mayor parte del material educativo activo del repo.
 
-- contiene `00.rb` a `12.rb`;
-- cubre fundamentos de Ruby;
-- el enfoque es claramente didáctico.
+**Estado:** activas y alineadas con la nueva estructura por dominio técnico.
 
-**Estado:** material educativo estable.
+### 2. `examples/networking/`
 
-### 2. `examples/practicas/`
+Concentra los ejemplos TCP migrados desde `socket/`.
 
-Agrupa scripts chicos y ejercicios manuales.
+**Estado:** activo, con ejemplos base y algunos casos todavía experimentales.
 
-Ejemplos presentes:
+### 3. `examples/experiments/`
 
-- `mind-reader.rb`
-- `roller.rb`
-- `speed.rb`
-- `simple_stats.rb`
-- `math-method.rb`
+Agrupa material más inestable o dependiente del sistema.
+
+Ejemplos visibles:
+
+- `tk-gui.rb`
 - `get-data.rb`
-
-**Estado:** práctica manual, sin estructura de app ni librería.
-
-### 3. `examples/socket/`
-
-Incluye pruebas de cliente/servidor TCP.
-
-- `08.rb`: servidor básico
-- `09.rb`: cliente básico
-- `10.rb` y `11.rb`: variantes más experimentales
+- `tcp-broadcast-attempt.rb`
 
 **Estado:** experimental.
 
-**Hallazgo importante:** `examples/socket/10.rb` sigue teniendo un problema real de alcance. El método `comunicar` usa `clientes`, pero esa variable fue declarada fuera del método y no está disponible ahí como variable local normal.
-
-### 4. `examples/graph/`
-
-Tiene un único archivo `01.rb` con un ejemplo mínimo de GraphQL.
-
-**Estado:** demo aislada.
-
-**Observación:** no hay un entorno de dependencias unificado en la raíz para garantizar ejecución directa de ese ejemplo.
-
-### 5. `examples/template/`
+### 4. `examples/template/`
 
 Acá cambió fuerte el panorama.
 
@@ -194,18 +171,22 @@ El servicio `ruby`:
 
 Permite ejecutar ejemplos de:
 
-- `lecciones`
-- `practicas`
-- `socket`
-- `graph`
+- `basics`
+- `cli`
+- `collections`
+- `experiments`
+- `io`
+- `networking`
+- `oop`
+
+Además, mantiene compatibilidad transitoria con aliases históricos de `lecciones`, `practicas` y `socket`.
 
 Ejemplos:
 
 ```bash
-bin/run lecciones 00
-bin/run practicas mind-reader
-bin/run socket 08
-bin/run graph 01
+bin/run basics types-and-booleans
+bin/run cli mind-reader
+bin/run networking tcp-server-basic
 ```
 
 Si detecta Docker Compose, ejecuta dentro del contenedor. Si no, intenta con Ruby local.
@@ -249,7 +230,6 @@ Aunque la taxonomía documental ya está bastante mejor resuelta, la carpeta `do
 
 - **tests automatizados**;
 - **CI/CD**;
-- **Gemfile raíz** para entorno unificado;
 - linting o validación de estilo;
 - definición explícita de qué contenido sigue vigente y qué contenido se está retirando.
 
@@ -301,7 +281,7 @@ Entonces el estado real es este:
 
 4. Revisar `docker-compose.yml` y decidir si el mapeo de puertos `3000:9292` sigue teniendo sentido.
 5. Definir el alcance inicial de `bin/setup`.
-6. Diseñar la migración desde `lecciones` / `practicas` / `socket` / `graph` hacia la estructura objetivo.
+6. Consolidar en docs y tooling la nueva estructura por dominio técnico.
 
 ### Prioridad baja
 
