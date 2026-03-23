@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ROOT_GEMFILE="$ROOT_DIR/Gemfile"
-RUN_GROUPS=(lecciones practicas socket io experiments basics collections oop cli networking)
+LEGACY_GROUPS=(lecciones practicas socket)
 
 cd "$ROOT_DIR"
 
@@ -12,52 +12,82 @@ print_help() {
 Uso:
   bin/run --help
   bin/run list
+  bin/run <ruta-al-archivo.rb> [args...]
   bin/run <grupo> <archivo-sin-ext> [args...]
+  bin/run file <ruta-al-archivo.rb> [args...]
   bin/run auto <grupo> <archivo-sin-ext> [args...]
+  bin/run auto file <ruta-al-archivo.rb> [args...]
   bin/run local <grupo> <archivo-sin-ext> [args...]
+  bin/run local file <ruta-al-archivo.rb> [args...]
   bin/run docker <grupo> <archivo-sin-ext> [args...]
+  bin/run docker file <ruta-al-archivo.rb> [args...]
 
-Grupos disponibles:
-  - lecciones
-  - practicas
-  - socket
-  - io
-  - experiments
-  - basics
-  - collections
-  - oop
-  - cli
-  - networking
+Grupos activos:
+  - se detectan dinámicamente desde examples/
 
 Ejemplos:
   bin/run list
-  bin/run lecciones 00
-  bin/run auto practicas mind-reader
-  bin/run local socket 08
-  bin/run local io file-reading
-  bin/run local experiments tk-gui
   bin/run local basics strings
-  bin/run local collections hashes
-  bin/run local oop methods-classes-and-inheritance
   bin/run local cli roller
   bin/run local networking tcp-server-basic
+  bin/run local file examples/basics/strings.rb
+  bin/run examples/cli/mind-reader.rb
 
 Notas:
   - 'auto' prioriza Docker Compose si está disponible y, si no, usa Ruby local.
-  - También podés omitir el modo: 'bin/run lecciones 00' funciona como alias de 'auto'.
+  - También podés omitir el modo: 'bin/run basics strings' funciona como alias de 'auto'.
+  - Los grupos legacy siguen funcionando por compatibilidad, pero no son la estructura principal.
 EOF
 }
 
-group_exists() {
+active_groups() {
+  local path has_ruby_files
+
+  for path in "$ROOT_DIR"/examples/*; do
+    [[ -d "$path" ]] || continue
+    has_ruby_files=false
+
+    for file in "$path"/*.rb; do
+      if [[ -e "$file" ]]; then
+        has_ruby_files=true
+        break
+      fi
+    done
+
+    [[ "$has_ruby_files" == true ]] || continue
+    printf '%s\n' "${path##*/}"
+  done
+}
+
+active_group_exists() {
+  local requested="$1"
+  local group
+
+  while IFS= read -r group; do
+    [[ -n "$group" ]] || continue
+    if [[ "$group" == "$requested" ]]; then
+      return 0
+    fi
+  done < <(active_groups)
+
+  return 1
+}
+
+legacy_group_exists() {
   local requested="$1"
 
-  for group in "${RUN_GROUPS[@]}"; do
+  for group in "${LEGACY_GROUPS[@]}"; do
     if [[ "$group" == "$requested" ]]; then
       return 0
     fi
   done
 
   return 1
+}
+
+group_exists() {
+  local requested="$1"
+  active_group_exists "$requested" || legacy_group_exists "$requested"
 }
 
 resolve_path() {
@@ -194,8 +224,16 @@ bundler_available() {
 }
 
 print_groups() {
-  printf 'Grupos disponibles:\n'
-  for group in "${RUN_GROUPS[@]}"; do
+  local group
+
+  printf 'Grupos activos:\n'
+  while IFS= read -r group; do
+    [[ -n "$group" ]] || continue
+    printf '  - %s\n' "$group"
+  done < <(active_groups)
+
+  printf '\nAliases legacy:\n'
+  for group in "${LEGACY_GROUPS[@]}"; do
     printf '  - %s\n' "$group"
   done
 }
@@ -204,9 +242,10 @@ list_examples() {
   local group file name
 
   print_groups
-  printf '\nEjemplos por grupo:\n'
+  printf '\nEjemplos por grupo activo:\n'
 
-  for group in "${RUN_GROUPS[@]}"; do
+  while IFS= read -r group; do
+    [[ -n "$group" ]] || continue
     printf '\n[%s]\n' "$group"
 
     for file in "examples/${group}"/*.rb; do
@@ -215,7 +254,7 @@ list_examples() {
       name="${name%.rb}"
       printf '  - %s\n' "$name"
     done
-  done
+  done < <(active_groups)
 }
 
 fail() {
@@ -250,6 +289,29 @@ run_docker() {
   exec docker compose run --rm ruby ruby "$path" "$@"
 }
 
+is_file_argument() {
+  local value="${1:-}"
+  [[ "$value" == file || "$value" == *.rb || "$value" == examples/* ]]
+}
+
+resolve_direct_file_path() {
+  local raw_path="$1"
+  local path="$raw_path"
+
+  if [[ "$path" == file ]]; then
+    return 1
+  fi
+
+  if [[ "$path" != examples/* ]]; then
+    path="examples/${path}"
+  fi
+
+  [[ "$path" == *.rb ]] || path="${path}.rb"
+  [[ -f "$path" ]] || return 1
+
+  printf '%s\n' "$path"
+}
+
 MODE="auto"
 
 case "${1:-}" in
@@ -266,6 +328,37 @@ case "${1:-}" in
     shift
     ;;
 esac
+
+[[ $# -ge 1 ]] || fail "Argumentos insuficientes. Usá 'bin/run --help' para ver la ayuda." 1
+
+if is_file_argument "${1:-}"; then
+  if [[ "$1" == file ]]; then
+    [[ $# -ge 2 ]] || fail "Falta la ruta del archivo. Usá 'bin/run --help' para ver la ayuda." 1
+    FILE_PATH_ARG="$2"
+    shift 2
+  else
+    FILE_PATH_ARG="$1"
+    shift 1
+  fi
+
+  PATH_TO_FILE="$(resolve_direct_file_path "$FILE_PATH_ARG")" || fail "No existe el archivo: $FILE_PATH_ARG" 3
+
+  case "$MODE" in
+    auto)
+      if docker_available; then
+        run_docker "$PATH_TO_FILE" "$@"
+      else
+        run_local "$PATH_TO_FILE" "$@"
+      fi
+      ;;
+    local)
+      run_local "$PATH_TO_FILE" "$@"
+      ;;
+    docker)
+      run_docker "$PATH_TO_FILE" "$@"
+      ;;
+  esac
+fi
 
 [[ $# -ge 2 ]] || fail "Argumentos insuficientes. Usá 'bin/run --help' para ver la ayuda." 1
 

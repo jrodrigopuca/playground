@@ -146,6 +146,8 @@ bin/run basics types-and-booleans
 
 El repo ya cuenta con un `Gemfile` raíz mínimo.
 
+Por ahora no declara gems activas del playground.
+
 ### Dependencias especiales
 
 - `tk` sigue considerándose una dependencia especial del sistema y no forma parte del `Gemfile` raíz por ahora.

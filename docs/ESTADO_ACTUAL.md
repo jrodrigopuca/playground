@@ -48,7 +48,6 @@ Acá está el punto clave, loco: **el árbol actual y lo trackeado por Git no co
 
 ### En el working tree actual
 
-- existe `docs/ESTADO_ACTUAL.md` como archivo nuevo no trackeado;
 - **no existe** `examples/template/`.
 
 ### En Git (`HEAD`)

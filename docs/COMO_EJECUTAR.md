@@ -35,10 +35,15 @@ Luego construye la ruta dentro de `examples/` y ejecuta el script.
 ```bash
 bin/run --help
 bin/run list
+bin/run <ruta-al-archivo.rb> [args...]
 bin/run <grupo> <archivo-sin-ext> [args...]
+bin/run file <ruta-al-archivo.rb> [args...]
 bin/run auto <grupo> <archivo-sin-ext> [args...]
+bin/run auto file <ruta-al-archivo.rb> [args...]
 bin/run local <grupo> <archivo-sin-ext> [args...]
+bin/run local file <ruta-al-archivo.rb> [args...]
 bin/run docker <grupo> <archivo-sin-ext> [args...]
+bin/run docker file <ruta-al-archivo.rb> [args...]
 ```
 
 ### Modos disponibles
@@ -50,13 +55,13 @@ bin/run docker <grupo> <archivo-sin-ext> [args...]
 Si omitís el modo:
 
 ```bash
-bin/run lecciones 00
+bin/run basics strings
 ```
 
 el script lo interpreta como alias de:
 
 ```bash
-bin/run auto lecciones 00
+bin/run auto basics strings
 ```
 
 ### Grupos válidos hoy
@@ -76,6 +81,20 @@ El runner mantiene compatibilidad con grupos históricos como:
 - `lecciones`
 - `practicas`
 - `socket`
+
+### Ejecución directa por archivo
+
+Ahora también podés ejecutar un ejemplo pasando la ruta del archivo directamente.
+
+Ejemplos:
+
+```bash
+bin/run examples/basics/strings.rb
+bin/run local file examples/cli/mind-reader.rb
+bin/run docker file examples/networking/tcp-server-basic.rb
+```
+
+Esto viene bárbaro cuando agregás carpetas o archivos nuevos y no querés depender de mappings manuales.
 
 ### Ejemplos
 
