@@ -4,6 +4,7 @@
 # Dependencias: stdlib.
 # Estado: estable
 # Fecha de modificación: 2026-03-23
+# modificado
 
 file_path = File.expand_path("../../data/texto.txt", __dir__)
 
