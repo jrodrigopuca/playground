@@ -1,4 +1,4 @@
-# Ruby Playground
+# Playground
 
 Repositorio orientado a **exploración práctica y rápida de Ruby**.
 
